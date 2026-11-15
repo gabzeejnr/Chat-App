@@ -17,6 +17,10 @@ async function addMessage(req: Request<{}, {}, { message: Messages }>, res: Resp
         const messages: Messages[] = JSON.parse(messagesData);
 
         const { message } = req.body;
+        if (!message) {
+            res.status(400).json({ error: 'Message payload is required' });
+            return;
+        }
         messages.push(message)
 
         await writeFile(messagesPath,
