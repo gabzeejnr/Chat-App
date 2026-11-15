@@ -6,9 +6,18 @@ import type { ApiError, ApiSuccess } from "../types/api.types.js";
 
 const messagesPath = path.resolve(__dirname, "../data/message.json");
 
-function addMessage(req: Request, res: Response<ApiSuccess | ApiError>) {
+interface Messages {
+    id: string;
+    role: "user" | "friend";
+    content: string;
+}
+
+async function addMessage(req: Request<{}, {}, { message: Messages }>, res: Response<ApiSuccess | ApiError>) {
     try {
-        const messagesData = await readFile(messagesPath)
+        const messagesData = await readFile(messagesPath, "utf-8");
+        const messages: Messages[] = JSON.parse(messagesData);
+
+        const { message } = req.body;
     } catch (err) {
         console.log("Failed to send message:", err);
         res.status(500).json({ error: "Internal server error" })

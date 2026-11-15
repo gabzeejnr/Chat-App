@@ -1,0 +1,12 @@
+[
+    {
+        "id": "string",
+        "role": "user",
+        "content": "Something"
+    },
+    {
+        "id": "anotherstring",
+        "role": "friend",
+        "content": "Another content"
+    }
+]
