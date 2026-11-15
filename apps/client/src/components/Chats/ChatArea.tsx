@@ -3,6 +3,7 @@ import { SendHorizontal } from "lucide-react";
 import type { SubmitEvent, KeyboardEvent } from "react";
 import type { Friend } from "@chat-app/shared";
 import styles from "./Chats.module.scss"
+import { API } from "../../apis/axios";
 
 function ChatInput({ username, onSend }: { username: string; onSend?: (message: string) => void }) {
     const [value, setValue] = useState("");
@@ -88,7 +89,15 @@ export default function ChatArea({ friend }: { friend: Friend }) {
         }
     ]
 
-    function handleSend(e: string) {
+    async function handleSend(e: string) {
+
+        const data:Messages = {
+            id: "somrthing random"
+        }
+        await API.post("/test/send", {
+            id: "something random",
+            
+        })
         TEST_MESSAGES.push({
             id: "Testrh34tv",
             role: "user",
