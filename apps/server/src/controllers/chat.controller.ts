@@ -3,7 +3,7 @@ import path from "node:path";
 import type { Request, Response } from "express";
 import type { ApiError, ApiSuccess } from "../types/api.types.js";
 
-const messagesPath = path.resolve(process.cwd(), 'data', 'messages.json');
+const messagesPath = path.resolve(process.cwd(), "src", "data", "message.json");
 
 interface Messages {
     id: string;
@@ -15,7 +15,7 @@ async function addMessage(req: Request<{}, {}, { message: Messages }>, res: Resp
     try {
         const messagesData = await readFile(messagesPath, "utf-8");
         const messages: Messages[] = JSON.parse(messagesData);
-
+        console.log(req.body)
         const { message } = req.body;
         if (!message) {
             res.status(400).json({ error: 'Message payload is required' });

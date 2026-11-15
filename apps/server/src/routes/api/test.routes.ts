@@ -4,6 +4,6 @@ import { addMessage } from "../../controllers/chat.controller.js";
 
 const testRoute: RouterType = Router();
 
-testRoute.get("/send", addMessage);
+testRoute.post("/send-message", addMessage);
 
 export { testRoute }
