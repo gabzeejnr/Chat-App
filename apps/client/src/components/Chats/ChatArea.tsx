@@ -2,7 +2,7 @@ import { useLayoutEffect, useRef, useState } from "react";
 import { SendHorizontal } from "lucide-react";
 import type { SubmitEvent, KeyboardEvent } from "react";
 import type { Friend } from "@chat-app/shared";
-import styles from ""
+import styles from "./Chats.module.scss"
 
 function ChatInput({ username, onSend }: { username: string; onSend?: (message: string) => void }) {
     const [value, setValue] = useState("");
@@ -51,11 +51,26 @@ function ChatInput({ username, onSend }: { username: string; onSend?: (message: 
     )
 }
 
+function MessagesArea({ messages }: { messages: any[] }) {
+    return (
+        <div className={`styles.wrapper border`}>
+            {messages.map((message) => (
+                <div key={message.id}
+                    className={
+                        message.role === "user" ? styles.user : styles.assistant}>
+                    {message.content}
+                </div>
+            ))}
+        </div>
+    )
+}
+
 export default function ChatArea({ friend }: { friend: Friend }) {
     const { username } = friend;
 
     return (
         <section className="flex-2 relative flex flex-col h-full">
+            <MessagesArea messages={[""]} />
             <ChatInput username={username} onSend={(e) => alert(e)} />
         </section>
     )

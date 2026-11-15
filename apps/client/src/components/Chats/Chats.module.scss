@@ -1,0 +1,63 @@
+$primary-margin: 1rem;
+
+@mixin chat{
+    padding: .5rem 1rem;
+    margin-top: 1rem;
+    border-radius: 20px;
+    width: fit-content;
+    max-width: 75%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    position: relative;
+    line-height: 1.5;
+}
+
+@mixin large-screens{
+    max-width: 500px
+}
+
+.user{
+    @include chat;
+    background: var(--user);
+    border-top-left-radius: 6px;
+    margin-right: auto;
+    border-radius: 0 20px 20px 20px;
+
+    &::before{
+        content: "";
+        position: absolute;
+        left: -8px;
+        top: 0;
+        width: 10px;
+        height: 0px;
+        background: inherit;
+        border-bottom-right-radius: 18px;
+    }
+
+    @media (min-width: 1024px) {
+        @include large-screens();
+    }
+}
+
+.friend{
+    @include chat;
+    background: var(--assistant);
+    margin-left: auto;
+    border-top-right-radius: 6px;
+    border-radius: 20px 0 20px 20px;
+
+    &::after{
+        content: "";
+        position: absolute;
+        right: -8px;
+        top: 0;
+        width: 10px;
+        height: 0px;
+        background: inherit;
+        border-bottom-left-radius: 18px;
+    }
+
+    @media (min-width: 1024px) {
+        @include large-screens();
+    }
+}
