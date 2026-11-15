@@ -1,31 +1,22 @@
 import { NavLink } from "react-router-dom";
 import { useMediaQuery } from "../hooks";
-import { SIDEBAR_DATA } from "../data";
-import type { Dispatch, SetStateAction } from "react";
+import { useSidebarData } from "../data";
 import { MessageCircle } from "lucide-react";
-
-type SidebarItemData = (typeof SIDEBAR_DATA)[number];
-type BadgeData = { count: number; danger?: boolean }
-
-
-const BADGES: Partial<Record<SidebarItemData["link"], BadgeData>> = {
-    "/chats": {
-        count: 43,
-        danger: true
-    },
-    "/new-friends": {
-        count: 4
-    },
-};
+import type { Dispatch, SetStateAction } from "react";
 
 
 export default function AppSidebar({ sidebarOpen, setSidebarOpen, }: { sidebarOpen: boolean; setSidebarOpen: Dispatch<SetStateAction<boolean>> }) {
+    type SidebarItemData = (typeof SIDEBAR_DATA)[number];
+    type BadgeData = { count: number; danger?: boolean }
+
+
+    const SIDEBAR_DATA = useSidebarData();
     const close = () => setSidebarOpen(false);
     const topItems = SIDEBAR_DATA.filter(data => !data.bottom);
     const bottomItems = SIDEBAR_DATA.filter(data => data.bottom);
     const itemBase = "group relative flex w-16 flex-col items-center gap-1.5 rounded-xl px-1 py-2.5 text-[11px] leading-tight text-sidebar-muted transition-colors duration-150 hover:bg-sidebar-active hover:text-sidebar-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent";
     const isMobile = !useMediaQuery("(min-width: 64rem)");
-
+    const BADGES: Partial<Record<SidebarItemData["link"], BadgeData>> = { "/chats": { count: 1 } };
 
     const renderItem = (data: SidebarItemData) => {
         const badge = BADGES[data.link];

@@ -46,11 +46,11 @@ export default function Chats() {
                 </aside>
                 {selectedFriend
                     ? <>
-                        <ChatArea username={selectedFriend?.username} />
+                        <ChatArea friend={selectedFriend} />
                         <ChatDetailsPane friend={selectedFriend} />
                     </>
-                    : <div className="border w-full">
-                        
+                    : <div className="w-full grid place-items-center">
+                        No chat selected... Select a chat to get started
                     </div>
                 }
             </div>

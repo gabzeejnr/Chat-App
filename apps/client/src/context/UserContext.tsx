@@ -2,19 +2,14 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { AUTH } from "../apis/axios";
 import type { ReactNode } from "react";
 import type { UserContextProp } from "../types";
+import { toInitials } from "../libs";
 
 const UserContext = createContext<UserContextProp | null>(null);
 
 export default function UserProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<UserContextProp["user"] | null>(null);
     const [loading, setLoading] = useState<boolean>(true); 
-    const initials = (user?.displayName
-        ?.trim()
-        .split(/\s+/)
-        .filter(Boolean)
-        .map(n => n[0]?.toUpperCase())
-        .join("")
-    ) || "U";
+    const initials = toInitials(user?.displayName!) || "U";
 
     useEffect(() => {
         async function getAuthenticated() {
