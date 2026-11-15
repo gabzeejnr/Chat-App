@@ -3,25 +3,25 @@ import { SendHorizontal } from "lucide-react";
 import type { SubmitEvent, KeyboardEvent } from "react";
 import type { Friend } from "@chat-app/shared";
 
-function ChatInput({ username, onSend }: { username: string; onSend?: (message: string) => void; }) {
+function ChatInput({ username, onSend }: { username: string; onSend?: (message: string) => void }) {
     const [value, setValue] = useState("");
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const canSend = value.trim().length > 0;
 
-    useLayoutEffect(() => {
+    useLayoutEffect(function () {
         const el = textareaRef.current;
         if (!el) return;
         el.style.height = "auto";
         el.style.height = `${el.scrollHeight}px`;
     }, [value]);
 
-    const send = () => {
+    function send() {
         if (!canSend) return;
         onSend?.(value.trim());
         setValue("");
     };
 
-    const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
+    function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
         e.preventDefault();
         send();
     };
@@ -55,7 +55,7 @@ export default function ChatArea({ friend }: { friend: Friend }) {
 
     return (
         <section className="flex-2 relative flex flex-col h-full">
-            <ChatInput username={username} />
+            <ChatInput username={username} onSend={(e) => alert(e)} />
         </section>
     )
 }
