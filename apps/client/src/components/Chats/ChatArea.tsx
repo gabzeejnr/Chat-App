@@ -96,7 +96,7 @@ export default function ChatArea({ friend }: { friend: Friend }) {
                 role: "user",
                 content: e
             }
-            const { data } = await API.post("/test/send-message", messageData)
+            const { data } = await API.post("/test/send-message", { message: messageData })
             console.log(data);
         } catch (err) {
             console.error(err);
