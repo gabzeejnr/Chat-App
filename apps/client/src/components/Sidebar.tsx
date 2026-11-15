@@ -40,7 +40,7 @@ export default function AppSidebar({ sidebarOpen, setSidebarOpen, }: { sidebarOp
                 }
             >
                 <span className="relative flex">
-                    <data.icon className={`size-5 transition-colors ${data.link === "/accounts" ? "" : "group-hover:text-sidebar-fg"}`} />
+                    <data.icon {...data.iconProps} className={`size-5 transition-colors ${data.link === "/accounts" ? "" : "group-hover:text-sidebar-fg"}`} />
                     {badge && (
                         <span aria-label={`${badge.count} notifications`} className={`absolute -top-2 -right-2.5 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-semibold text-white ring-2 ring-sidebar ${badge.danger
                             ? "bg-danger"

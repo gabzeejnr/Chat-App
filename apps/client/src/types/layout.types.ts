@@ -4,10 +4,10 @@ import type { ComponentType } from "react";
 
 interface SidebarProps {
     title: string;
-    icon: LucideIcon | ComponentType<{ className?: string }>;
+    icon: LucideIcon | ComponentType<any>;
+    iconProps?: Record<string, unknown>
     link: `/${string}`;
     bottom?: true;
-    onClick?:()=>void;
 }
 
 
