@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { FRIEND_API, axios } from "../apis/axios";
 import ChatList from "../components/Chats/ChatList";
-import type { Friend } from "@chat-app/shared";
 import ChatArea from "../components/Chats/ChatArea";
 import ChatDetailsPane from "../components/Chats/ChatDetailsPane";
+import type { Friend } from "@chat-app/shared";
 
 export default function Chats() {
     const [loading, setLoading] = useState(false);
