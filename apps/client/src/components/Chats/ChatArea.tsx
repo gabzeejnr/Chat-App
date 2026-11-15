@@ -51,12 +51,14 @@ function ChatInput({ username, onSend }: { username: string; onSend?: (message: 
     )
 }
 
+interface Messages {
+    id: string;
+    role: "user" | "friend";
+    content: string;
+}
+
 function MessagesArea({ messages }: {
-    messages: {
-        id: string;
-        role: "user" | "friend";
-        content: string;
-    }[]
+    messages: Messages[]
 }) {
     return (
         <div className={`${styles.wrapper} h-full mb-15`}>
@@ -73,24 +75,27 @@ function MessagesArea({ messages }: {
 
 export default function ChatArea({ friend }: { friend: Friend }) {
     const { username } = friend;
+    const TEST_MESSAGES: Messages[] = [
+        {
+            id: "string",
+            role: "user",
+            content: "Something"
+        },
+        {
+            id: "anotherstring",
+            role: "friend",
+            content: "Another content"
+        }
+    ]
+
+    function handleSend(e: string) {
+        alert(e)
+    }
 
     return (
         <section className="flex-2 relative flex flex-col h-full px-2">
-            <MessagesArea messages={
-                [
-                    {
-                        id: "string",
-                        role: "user",
-                        content: "Something"
-                    },
-                    {
-                        id: "anotherstring",
-                        role: "friend",
-                        content: "Another content"
-                    }
-                ]
-            } />
-            <ChatInput username={username} onSend={(e) => alert(e)} />
+            <MessagesArea messages={TEST_MESSAGES} />
+            <ChatInput username={username} onSend={(e) => handleSend(e)} />
         </section>
     )
 }

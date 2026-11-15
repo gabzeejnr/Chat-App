@@ -5,7 +5,7 @@ import type { Dispatch, SetStateAction } from "react";
 
 export default function Header({ setSidebarOpen }: { setSidebarOpen: Dispatch<SetStateAction<boolean>> }) {
     return (
-        <header className="flex shrink-0 items-center justify-between px-8 py-3 bg-primary-hover">
+        <header className="flex md:hidden shrink-0 items-center justify-between px-8 py-3 bg-primary-hover">
             <button type="button" title="Toggle sidebar" onClick={() => setSidebarOpen(p => !p)} className="p-1 hover:border transition-border duration-200 lg:hidden">
                 <Menu color="white" />
             </button>
