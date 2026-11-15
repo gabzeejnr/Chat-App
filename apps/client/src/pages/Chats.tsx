@@ -9,7 +9,7 @@ export default function Chats() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [friends, setFriends] = useState<Friend[]>([]);
-    const [selectedFriend, setselectedFriend] = useState<Friend | null>(null);
+    const [selectedFriend, setSelectedFriend] = useState<Friend | null>(null);
 
 
     async function loadFriends(signal: AbortSignal) {
@@ -42,7 +42,7 @@ export default function Chats() {
         <div className="h-full">
             <div className="flex gap-2 h-full">
                 <aside className="h-full">
-                    {friends.map(friend => <ChatList key={friend.friendshipId} friend={friend} setSelectedFriend={setselectedFriend} />)}
+                    {friends.map(friend => <ChatList key={friend.friendshipId} friend={friend} setSelectedFriend={setSelectedFriend} />)}
                 </aside>
                 {selectedFriend
                     ? <>

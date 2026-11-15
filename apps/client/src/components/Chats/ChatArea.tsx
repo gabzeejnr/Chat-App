@@ -5,7 +5,7 @@ import type { Friend } from "@chat-app/shared";
 import styles from "./Chats.module.scss"
 import { API, axios } from "../../apis/axios";
 
-function ChatInput({ username, onSend }: { username: string; onSend?: (message: string) => void }) {
+function ChatInput({ username, onSend }: { username: string; onSend?: (message: string) => Promise<void> }) {
     const [value, setValue] = useState("");
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const canSend = value.trim().length > 0;
@@ -17,7 +17,7 @@ function ChatInput({ username, onSend }: { username: string; onSend?: (message: 
         el.style.height = `${el.scrollHeight}px`;
     }, [value]);
 
-    function send() {
+    async function send() {
         if (!canSend) return;
         onSend?.(value.trim());
         setValue("");
@@ -75,7 +75,7 @@ function MessagesArea({ messages }: {
 }
 
 export default function ChatArea({ friend }: { friend: Friend }) {
-    const { username } = friend;
+    const { username, userId } = friend;
     const [messages, setMessages] = useState<Messages[]>([]);
     const [loadingMessages, setLoadingMessages] = useState(true);
     const [messagesError, setMessagesError] = useState<string | null>(null);
@@ -85,6 +85,10 @@ export default function ChatArea({ friend }: { friend: Friend }) {
 
         async function loadMessages() {
             try {
+                setMessages([]);
+                setMessagesError(null);
+                setLoadingMessages(true);
+
                 const { data } = await API.get<{ message: string; data: Messages[] }>("/test/messages", {
                     signal: controller.signal
                 });
@@ -103,7 +107,7 @@ export default function ChatArea({ friend }: { friend: Friend }) {
 
         void loadMessages();
         return () => controller.abort();
-    }, []);
+    }, [userId]);
 
     async function handleSend(e: string) {
         try {
