@@ -58,17 +58,17 @@ interface Messages {
     content: string;
 }
 
-function MessagesArea({ messages }: {
-    messages: Messages[]
-}) {
+function MessagesArea({ messages }: { messages: Messages[] }) {
+    const bottomRef = useRef<HTMLDivElement | null>(null);
+    const scrollToBottom = () => bottomRef.current?.scrollIntoView({ behavior: "smooth" })
+
     return (
         <div className={`${styles.wrapper} h-full mb-15 overflow-y-auto scrollbar-thumb-expand`}>
             {messages.map((message) => (
                 <div key={message.id}
                     className={`${message.role === "user" ? styles.user : styles.friend}
-                    py-2 px-4 mt-4 w-fit rounded-[20px] max-w-3/4 wrap-break-word relative`}>
-                    {message.content}
-                </div>
+                    py-2 px-4 mt-4 w-fit rounded-[20px] max-w-3/4 wrap-break-word relative`}
+                >{message.content}</div>
             ))}
         </div>
     )
