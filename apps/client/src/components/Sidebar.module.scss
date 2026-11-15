@@ -1,0 +1,62 @@
+// group-[group]:hover:w-30 transition-[width] duration-700
+
+.sidebar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.3);
+
+    vertical-align: middle;
+    background-blend-mode: normal;
+    backdrop-filter: blur(10px) saturate(140%);
+    -webkit-backdrop-filter: blur(10px) saturate(140%);
+
+    transition: transform 500ms ease, visibility 0s linear 300ms;
+
+
+    a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: text 700ms;
+
+        span.title {
+            display: flex;
+            font-size: 10px;
+            font-family: monospace;
+        }
+
+        &:hover {
+            color: white;
+        }
+    }
+}
+
+
+.open {
+    transform: translateX(0);
+    visibility: visible;
+    transition: transform 500ms ease;
+}
+
+.closed {
+    transform: translateX(-100%);
+    visibility: hidden;
+}
+
+@media (min-width: 64rem) {
+    .sidebar {
+        position: relative;
+        left: auto;
+        top: auto;
+        bottom: auto;
+    }
+
+    .open,
+    .closed {
+        transform: none;
+        visibility: visible;
+        transition: none;
+    }
+}

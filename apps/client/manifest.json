@@ -1,0 +1,22 @@
+{
+  "id": "/",
+  "name": "GChat",
+  "short_name": "GChat",
+  "description": "Connect and chat with your friends.",
+  "lang": "en",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#101713",
+  "theme_color": "#008235",
+  "categories": ["social", "communication"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+
+@theme {
+    --color-primary: var(--primary);
+    --color-primary-hover: var(--primary-hover);
+    --color-accent: var(--accent);
+    --color-foreground: var(--foreground);
+    --color-muted: var(--muted);
+    --color-background: var(--background);
+    --color-surface: var(--surface);
+    --color-surface-hover: var(--surface-hover);
+    --color-border: var(--border);
+    --color-danger: var(--danger);
+    --color-success: var(--success);
+
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-active: var(--sidebar-active);
+    --color-sidebar-fg: var(--sidebar-fg);
+    --color-sidebar-muted: var(--sidebar-muted);
+    --color-sidebar-badge: var(--sidebar-badge);
+    --color-sidebar-border: var(--sidebar-border);
+}

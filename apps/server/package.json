@@ -1,0 +1,37 @@
+{
+  "name": "chat-server",
+  "version": "1.0.0",
+  "description": "",
+  "license": "MIT",
+  "author": "Gabriel Dodowei",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "node -e \"console.log('Working, I guess')\"",
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "watch": "tsc --watch"
+  },
+  "dependencies": {
+    "@chat-app/shared": "^1.0.0",
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^18.0.9",
+    "express": "^5.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.23.1",
+    "socket.io": "^4.8.4",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/cookie-parser": "^1.4.10",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^24.19.2",
+    "@types/pg": "^8.23.1",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3"
+  }
+}

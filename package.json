@@ -1,0 +1,20 @@
+{
+    "name": "chat-app",
+    "private": true,
+    "version": "1.0.0",
+    "workspaces": [
+               "apps/*",
+        "packages/*"
+    ],
+    "scripts": {
+        "dev:client": "npm run dev --workspace=chat-client",
+        "build:client": "npm run build --workspace=chat-client",
+        "lint:client": "npm run lint --workspace=chat-client",
+        "preview:client": "npm run preview --workspace=chat-client",
+        "dev:server": "npm run dev --workspace=chat-server",
+        "build:server": "npm run build --workspace=chat-server",
+        "start:server": "npm run start --workspace=chat-server",
+        "watch:server": "npm run watch --workspace=chat-server",
+        "build:shared": "npm run build --workspace=packages/shared"
+    }
+}

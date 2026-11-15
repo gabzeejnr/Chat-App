@@ -1,0 +1,92 @@
+:root {
+    color-scheme: light dark;
+
+    --primary: light-dark(#7868E8, #A99BFF);
+    --primary-hover: light-dark(#6656D9, #8D7CF5);
+    --accent: light-dark(#8C7CF6, #A99BFF);
+
+    --foreground: light-dark(#242238, #F2F0FF);
+    --muted: light-dark(#77758A, #A8A5BC);
+
+    --background: light-dark(#E8E6FA, #151421);
+    --surface: light-dark(#FCFBFF, #211F31);
+    --surface-hover: light-dark(#F0EEFC, #2B2940);
+
+    --border: light-dark(#E3E0F2, #3A374E);
+
+    --danger: light-dark(#E86A58, #FF8677);
+    --success: light-dark(#438A68, #70C99B);
+
+    --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+    --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+    --mono: ui-monospace, Consolas, monospace;
+
+    --spacing: 0.25rem;
+
+    --radius-sm: 0.25rem;
+    --radius-md: 0.625rem;
+    --radius-lg: 1rem;
+    --radius-full: 9999px;
+
+    --shadow-sm: 0 1px 4px rgb(37 31 79 / 8%);
+    --shadow-md: 0 6px 18px rgb(37 31 79 / 12%);
+
+    --transition-fast: 150ms ease;
+    --transition-normal: 250ms ease;
+
+    --sidebar: #201F25;
+    --sidebar-active: #393840;
+    --sidebar-fg: #F6F5FB;
+    --sidebar-muted: #9A99A3;
+    --sidebar-badge: #4A4852;
+    --sidebar-border: #3B3941;
+
+    font: 14px/145% var(--sans);
+    letter-spacing: 0.18px;
+    color: var(--foreground);
+    background: var(--background);
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+:root[data-theme="light"] {
+    color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+    color-scheme: dark;
+}
+
+body {
+    margin: 0;
+}
+
+h1,
+h2 {
+    font-family: var(--heading);
+    font-weight: 500;
+}
+
+h1 {
+    font-size: 48px;
+    font-weight: 500;
+    letter-spacing: -1.68px;
+    margin: 20px 0;
+
+    @media (max-width: 1024px) {
+        font-size: 40px;
+        margin: 20px 0;
+    }
+}
+
+h2 {
+    font-size: 30px;
+    letter-spacing: 1.5px;
+    margin: 0;
+
+    @media (max-width: 1024px) {
+        font-size: 25px;
+    }
+}
