@@ -1,4 +1,4 @@
-import { readFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import type { Request, Response } from "express";
@@ -18,6 +18,9 @@ async function addMessage(req: Request<{}, {}, { message: Messages }>, res: Resp
         const messages: Messages[] = JSON.parse(messagesData);
 
         const { message } = req.body;
+
+        await writeFile(messagesPath,
+            JSON.stringify(message), {})
     } catch (err) {
         console.log("Failed to send message:", err);
         res.status(500).json({ error: "Internal server error" })
