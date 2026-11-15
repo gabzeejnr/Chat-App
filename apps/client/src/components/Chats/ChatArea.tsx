@@ -62,8 +62,8 @@ function MessagesArea({ messages }: {
         <div className={`${styles.wrapper} border h-full mb-15`}>
             {messages.map((message) => (
                 <div key={message.id}
-                    className={
-                        message.role === "user" ? styles.user : styles.friend}>
+                    className={`${message.role === "user" ? styles.user : styles.friend}
+                    py-2 px-4 mt-4 w-fit rounded-[20px] max-w-3/4 wrap-break-word relative`}>
                     {message.content}
                 </div>
             ))}
@@ -76,11 +76,20 @@ export default function ChatArea({ friend }: { friend: Friend }) {
 
     return (
         <section className="flex-2 relative flex flex-col h-full">
-            <MessagesArea messages={[{
-                id: string,
-                role: "user" | "friend",
-                content: string;
-            }]} />
+            <MessagesArea messages={
+                [
+                    {
+                        id: "string",
+                        role: "user",
+                        content: "Something"
+                    },
+                    {
+                        id: "anotherstring",
+                        role: "friend",
+                        content: "Another content"
+                    }
+                ]
+            } />
             <ChatInput username={username} onSend={(e) => alert(e)} />
         </section>
     )
