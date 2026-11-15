@@ -3,7 +3,7 @@ import path from "node:path";
 import type { Request, Response } from "express";
 import type { ApiError, ApiSuccess } from "../types/api.types.js";
 
-const messagesPath = path.resolve(__dirname, "../data/message.json");
+const messagesPath = path.resolve(__filename, "../data/message.json");
 
 interface Messages {
     id: string;

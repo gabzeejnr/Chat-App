@@ -90,20 +90,17 @@ export default function ChatArea({ friend }: { friend: Friend }) {
     ]
 
     async function handleSend(e: string) {
-
-        const data:Messages = {
-            id: "somrthing random"
+        try {
+            const messageData: Messages = {
+                id: "somrthing random",
+                role: "user",
+                content: e
+            }
+            const { data } = await API.post("/test/send", messageData)
+            console.log(data);
+        } catch (err) {
+            console.error(err);
         }
-        await API.post("/test/send", {
-            id: "something random",
-            
-        })
-        TEST_MESSAGES.push({
-            id: "Testrh34tv",
-            role: "user",
-            content: e
-        })
-        return;
     }
 
     return (
