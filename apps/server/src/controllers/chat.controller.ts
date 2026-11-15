@@ -35,13 +35,19 @@ async function addMessage(req: Request<{}, {}, { message: Messages }>, res: Resp
     }
 }
 
-async function getMessages(req: Request, res: Response) {
+async function getMessages(req: Request, res: Response<ApiSuccess | ApiError>): Promise<void> {
     try {
-        
+        const messagesData = await readFile(messagesPath, "utf-8")
+        const messages: Messages[] = JSON.parse(messagesData);
+
+        res.status(200).json({
+            message: "Messages fetched",
+            data: messages
+        })
     } catch (err) {
         console.log("Failed to retrieve messages:", err)
-        res.status(500)
+        res.status(500).json({ error: "Internal server error." })
     }
 }
 
-export { addMessage }
+export { addMessage, getMessages }
