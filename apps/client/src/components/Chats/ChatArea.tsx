@@ -17,7 +17,7 @@ function ChatInput({ username, onSend }: { username: string; onSend?: (message: 
     }, [value]);
 
     function send() {
-        if (!canSend) return;
+        if (value.trim().length <= 0) return;
         onSend?.(value.trim());
         setValue("");
     };
@@ -89,13 +89,18 @@ export default function ChatArea({ friend }: { friend: Friend }) {
     ]
 
     function handleSend(e: string) {
-        alert(e)
+        TEST_MESSAGES.push({
+            id: "Testrh34tv",
+            role: "user",
+            content: e
+        })
+        return;
     }
 
     return (
         <section className="flex-2 relative flex flex-col h-full px-2">
             <MessagesArea messages={TEST_MESSAGES} />
-            <ChatInput username={username} onSend={(e) => handleSend(e)} />
+            <ChatInput username={username} onSend={e => handleSend(e)} />
         </section>
     )
 }
