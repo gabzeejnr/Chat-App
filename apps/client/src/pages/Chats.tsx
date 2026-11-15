@@ -47,7 +47,7 @@ export default function Chats() {
                 {selectedFriend
                     ? <>
                         <ChatArea username={selectedFriend?.username} />
-                        <ChatDetailsPane />
+                        <ChatDetailsPane friend={selectedFriend} />
                     </>
                     : <div className="border w-full">
                         
