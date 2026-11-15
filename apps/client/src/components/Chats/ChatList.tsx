@@ -3,6 +3,10 @@ import type { Dispatch, SetStateAction } from "react";
 import type { Friend } from "@chat-app/shared";
 import { toInitials } from "../../libs";
 
+interface ChatListProps {
+    friend:Friend;
+    isSele
+}
 
 export default function ChatList({ friend, setSelectedFriend }: { friend: Friend; setSelectedFriend: Dispatch<SetStateAction<Friend | null>> }) {
 
