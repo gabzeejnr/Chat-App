@@ -22,7 +22,7 @@ const SIDEBAR_DATA: SidebarProps[] = [
     {
         title: "Accounts",
         icon: Avatar,
-        iconProps: {size: 4},
+        iconProps: { size: 4 },
         link: "/accounts",
         bottom: true
     },
