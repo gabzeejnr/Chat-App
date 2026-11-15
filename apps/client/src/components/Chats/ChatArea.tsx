@@ -1,9 +1,9 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { SendHorizontal } from "lucide-react";
 import type { SubmitEvent, KeyboardEvent } from "react";
 import type { Friend } from "@chat-app/shared";
 import styles from "./Chats.module.scss"
-import { API } from "../../apis/axios";
+import { API, axios } from "../../apis/axios";
 
 function ChatInput({ username, onSend }: { username: string; onSend?: (message: string) => void }) {
     const [value, setValue] = useState("");
@@ -76,28 +76,44 @@ function MessagesArea({ messages }: {
 
 export default function ChatArea({ friend }: { friend: Friend }) {
     const { username } = friend;
-    const TEST_MESSAGES: Messages[] = [
-        {
-            id: "string",
-            role: "user",
-            content: "Something"
-        },
-        {
-            id: "anotherstring",
-            role: "friend",
-            content: "Another content"
+    const [messages, setMessages] = useState<Messages[]>([]);
+    const [loadingMessages, setLoadingMessages] = useState(true);
+    const [messagesError, setMessagesError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const controller = new AbortController();
+
+        async function loadMessages() {
+            try {
+                const { data } = await API.get<{ message: string; data: Messages[] }>("/test/messages", {
+                    signal: controller.signal
+                });
+                setMessages(data.data);
+            } catch (err) {
+                if (!controller.signal.aborted) {
+                    const message = axios.isAxiosError<{ error?: string }>(err)
+                        ? err.response?.data.error || "Couldn't load messages. Please try again."
+                        : "Couldn't load messages. Please try again.";
+                    setMessagesError(message);
+                }
+            } finally {
+                if (!controller.signal.aborted) setLoadingMessages(false);
+            }
         }
-    ]
+
+        void loadMessages();
+        return () => controller.abort();
+    }, []);
 
     async function handleSend(e: string) {
         try {
             const messageData: Messages = {
-                id: "somrthing random",
+                id: crypto.randomUUID(),
                 role: "user",
                 content: e
             }
-            const { data } = await API.post("/test/send-message", { message: messageData })
-            console.log(data);
+            await API.post("/test/send-message", { message: messageData })
+            setMessages(previousMessages => [...previousMessages, messageData]);
         } catch (err) {
             console.error(err);
         }
@@ -105,7 +121,9 @@ export default function ChatArea({ friend }: { friend: Friend }) {
 
     return (
         <section className="flex-2 relative flex flex-col h-full px-2">
-            <MessagesArea messages={TEST_MESSAGES} />
+            {loadingMessages && <p role="status">Loading messages...</p>}
+            {messagesError && <p role="alert" className="text-error">{messagesError}</p>}
+            <MessagesArea messages={messages} />
             <ChatInput username={username} onSend={(e) => handleSend(e)} />
         </section>
     )
