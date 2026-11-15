@@ -51,13 +51,19 @@ function ChatInput({ username, onSend }: { username: string; onSend?: (message: 
     )
 }
 
-function MessagesArea({ messages }: { messages: any[] }) {
+function MessagesArea({ messages }: {
+    messages: {
+        id: string;
+        role: "user" | "friend";
+        content: string;
+    }[]
+}) {
     return (
-        <div className={`styles.wrapper border`}>
+        <div className={`${styles.wrapper} border h-full mb-15`}>
             {messages.map((message) => (
                 <div key={message.id}
                     className={
-                        message.role === "user" ? styles.user : styles.assistant}>
+                        message.role === "user" ? styles.user : styles.friend}>
                     {message.content}
                 </div>
             ))}
@@ -70,7 +76,11 @@ export default function ChatArea({ friend }: { friend: Friend }) {
 
     return (
         <section className="flex-2 relative flex flex-col h-full">
-            <MessagesArea messages={[""]} />
+            <MessagesArea messages={[{
+                id: string,
+                role: "user" | "friend",
+                content: string;
+            }]} />
             <ChatInput username={username} onSend={(e) => alert(e)} />
         </section>
     )
