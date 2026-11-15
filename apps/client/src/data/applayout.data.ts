@@ -1,7 +1,9 @@
 import { MessageCircle, UsersRound, UserRoundPlus, Settings } from "lucide-react";
-import { UserAvatar } from "../components/Avatar"
+import ProfilePicture from "../components/Avatar"
 import type { SidebarProps } from "../types";
+import { useUser } from "../context/UserContext";
 
+const { initials } = useUser()
 
 const SIDEBAR_DATA: SidebarProps[] = [
     {
@@ -21,7 +23,7 @@ const SIDEBAR_DATA: SidebarProps[] = [
     },
     {
         title: "Accounts",
-        icon: UserAvatar,
+        icon: ProfilePicture,
         iconProps: { size: 7 },
         link: "/accounts",
         bottom: true
