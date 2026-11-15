@@ -120,7 +120,7 @@ export default function ChatArea({ friend }: { friend: Friend }) {
     }
 
     return (
-        <section className="flex-2 relative flex flex-col h-full px-2">
+        <section className="flex-2 relative flex flex-col h-full px-2 overflow-hidden">
             {loadingMessages && <p role="status">Loading messages...</p>}
             {messagesError && <p role="alert" className="text-danger">{messagesError}</p>}
             <MessagesArea messages={messages} />

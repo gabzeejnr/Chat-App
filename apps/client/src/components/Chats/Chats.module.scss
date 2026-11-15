@@ -12,29 +12,6 @@ $primary-margin: 1rem;
 .user{
     @include chat;
     background: var(--user);
-    border-top-left-radius: 6px;
-    margin-right: auto;
-    border-radius: 0 20px 20px 20px;
-
-    &::before{
-        content: "";
-        position: absolute;
-        left: -8px;
-        top: 0;
-        width: 10px;
-        height: 0px;
-        background: inherit;
-        border-bottom-right-radius: 18px;
-    }
-
-    @media (min-width: 1024px) {
-        @include large-screens();
-    }
-}
-
-.friend{
-    @include chat;
-    background: var(--friend);
     margin-left: auto;
     border-top-right-radius: 6px;
     border-radius: 20px 0 20px 20px;
@@ -48,6 +25,29 @@ $primary-margin: 1rem;
         height: 0px;
         background: inherit;
         border-bottom-left-radius: 18px;
+    }
+
+    @media (min-width: 1024px) {
+        @include large-screens();
+    }
+}
+
+.friend{
+    @include chat;
+    background: var(--friend);
+    border-top-left-radius: 6px;
+    margin-right: auto;
+    border-radius: 0 20px 20px 20px;
+
+    &::before{
+        content: "";
+        position: absolute;
+        left: -8px;
+        top: 0;
+        width: 10px;
+        height: 0px;
+        background: inherit;
+        border-bottom-right-radius: 18px;
     }
 
     @media (min-width: 1024px) {
