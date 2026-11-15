@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef, useState } from "react";
 import { SendHorizontal } from "lucide-react";
 import type { SubmitEvent, KeyboardEvent } from "react";
 import type { Friend } from "@chat-app/shared";
+import styles from ""
 
 function ChatInput({ username, onSend }: { username: string; onSend?: (message: string) => void }) {
     const [value, setValue] = useState("");
