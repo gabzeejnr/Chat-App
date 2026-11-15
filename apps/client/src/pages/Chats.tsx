@@ -6,7 +6,7 @@ import ChatDetailsPane from "../components/Chats/ChatDetailsPane";
 import type { Friend } from "@chat-app/shared";
 
 export default function Chats() {
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [friends, setFriends] = useState<Friend[]>([]);
     const [selectedFriend, setselectedFriend] = useState<Friend | null>(null);
