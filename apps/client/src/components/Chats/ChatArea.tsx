@@ -62,7 +62,7 @@ function MessagesArea({ messages }: {
     messages: Messages[]
 }) {
     return (
-        <div className={`${styles.wrapper} h-full mb-15 overflow-y-auto scrollbar-thin hover:scrollbar-auto`}>
+        <div className={`${styles.wrapper} h-full mb-15 overflow-y-auto scrollbar-thumb-expand`}>
             {messages.map((message) => (
                 <div key={message.id}
                     className={`${message.role === "user" ? styles.user : styles.friend}
