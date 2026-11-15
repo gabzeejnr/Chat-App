@@ -59,7 +59,7 @@ function MessagesArea({ messages }: {
     }[]
 }) {
     return (
-        <div className={`${styles.wrapper} border h-full mb-15`}>
+        <div className={`${styles.wrapper} h-full mb-15`}>
             {messages.map((message) => (
                 <div key={message.id}
                     className={`${message.role === "user" ? styles.user : styles.friend}
@@ -75,7 +75,7 @@ export default function ChatArea({ friend }: { friend: Friend }) {
     const { username } = friend;
 
     return (
-        <section className="flex-2 relative flex flex-col h-full">
+        <section className="flex-2 relative flex flex-col h-full px-2">
             <MessagesArea messages={
                 [
                     {

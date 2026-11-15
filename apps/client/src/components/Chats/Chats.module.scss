@@ -34,7 +34,7 @@ $primary-margin: 1rem;
 
 .friend{
     @include chat;
-    background: var(--assistant);
+    background: var(--friend);
     margin-left: auto;
     border-top-right-radius: 6px;
     border-radius: 20px 0 20px 20px;
