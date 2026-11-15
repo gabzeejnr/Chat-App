@@ -35,4 +35,13 @@ async function addMessage(req: Request<{}, {}, { message: Messages }>, res: Resp
     }
 }
 
+async function getMessages(req: Request, res: Response) {
+    try {
+        
+    } catch (err) {
+        console.log("Failed to retrieve messages:", err)
+        res.status(500)
+    }
+}
+
 export { addMessage }
