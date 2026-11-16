@@ -88,5 +88,10 @@
     "id": "eb7a2915-72ee-489b-9e89-b57554ab6395",
     "role": "user",
     "content": "Test"
+  },
+  {
+    "id": "daafd38c-73b2-4341-81ad-912537067328",
+    "role": "user",
+    "content": "This is a longer chat message so I can actually test the message bubble to add a loading and date func"
   }
 ]

@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { SendHorizontal } from "lucide-react";
-1111111111111111`````````````````````````````````````qqqqimport type { SubmitEvent, KeyboardEvent } from "react";
+import type { SubmitEvent, KeyboardEvent } from "react";
 import type { Friend } from "@chat-app/shared";
 import styles from "./Chats.module.scss"
 import { API, axios } from "../../apis/axios";
@@ -20,7 +20,7 @@ function ChatInput({ username, onSend }: { username: string; onSend?: (message: 
     async function send() {
         if (!canSend) return;
         try {
-            await onSend?.(value.trim());            setValue("");
+            await onSend?.(value.trim()); setValue("");
         } catch (err) {
             console.error("I'll put something here later:", err);
         }
@@ -74,15 +74,18 @@ function MessagesArea({ messages }: { messages: Messages[] }) {
                 <div key={message.id}
                     className={`${message.role === "user" ? styles.user : styles.friend}
                     py-2 px-4 mt-4 w-fit rounded-[20px] max-w-3/4 wrap-break-word relative`}
-                >{message.content}</div>
+                >
+                    {message.content}
+                <span className="absolute text-sm bottom-0 right-3">t</span>
+                </div>
             ))}
             <div ref={bottomRef} />
         </div>
     )
 }
 
-e//xport default function ChatArea({ friend }: { friend: Friend }) {
-    const { username, userId } = friend;
+export default function ChatArea({ friend }: { friend: Friend }) {
+    const { username, userId, friendshipId } = friend;
     const [messages, setMessages] = useState<Messages[]>([]);
     const [loadingMessages, setLoadingMessages] = useState(true);
     const [messagesError, setMessagesError] = useState<string | null>(null);
@@ -114,7 +117,7 @@ e//xport default function ChatArea({ friend }: { friend: Friend }) {
 
         void loadMessages();
         return () => controller.abort();
-    }, [userId]);
+    }, [friendshipId]);
 
     async function handleSend(e: string) {
         try {
