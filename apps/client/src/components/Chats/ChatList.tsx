@@ -6,20 +6,19 @@ import { toInitials } from "../../libs";
 interface ChatListProps {
     friend: Friend;
     isSelected: boolean;
+    selectedFriendId?: string;
     setSelectedFriend: Dispatch<SetStateAction<Friend | null>>
 }
 
-export default function ChatList({ friend, setSelectedFriend, isSelected }: ChatListProps) {
+export default function ChatList({ friend, selectedFriendId, setSelectedFriend, isSelected }: ChatListProps) {
 
     const { avatarUrl, displayName, userId } = friend;
     const unreadCount = 99;
+    const isActive = friend.userId === selectedFriendId
 
     return (
         <button type="button" className="flex gap-3 w-full justify-between items-center cursor-pointer hover:bg-background px-1 py-2 transition-colors duration-300"
-            onClick={() => {
-                setSelectedFriend(friend);
-                setIsSelected(true)
-            }}
+            onClick={() => setSelectedFriend(friend)}
         >
             <ProfilePicture key={`${userId}-${avatarUrl}`} url={avatarUrl} name={displayName} size={14} initials={(toInitials(displayName)).slice(0, 2)} />
             <div className="flex flex-col h-full gap-2">

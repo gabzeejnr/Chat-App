@@ -10,27 +10,26 @@ export default function Chats() {
     const [error, setError] = useState<string | null>(null);
     const [friends, setFriends] = useState<Friend[]>([]);
     const [selectedFriend, setSelectedFriend] = useState<Friend | null>(null);
-    
 
-        async function loadFriends(signal: AbortSignal) {
-            setLoading(true);
-            setError(null);
-            try {
-                const { data } = await FRIEND_API.get<{ message: string; data: Friend[] }>("", {
-                    signal
-                });
-                setFriends(data.data);
-            } catch (err) {
-                if (!signal.aborted) {
-                    const message = axios.isAxiosError<{ error?: string }>(err)
-                        ? err.response?.data.error || "Couldn't load friends. Please try again."
-                        : "Couldn't load friends. Please try again.";
-                    setError(message);
-                }
-            } finally {
-                if (!signal.aborted) setLoading(false);
+    async function loadFriends(signal: AbortSignal) {
+        setLoading(true);
+        setError(null);
+        try {
+            const { data } = await FRIEND_API.get<{ message: string; data: Friend[] }>("", {
+                signal
+            });
+            setFriends(data.data);
+        } catch (err) {
+            if (!signal.aborted) {
+                const message = axios.isAxiosError<{ error?: string }>(err)
+                    ? err.response?.data.error || "Couldn't load friends. Please try again."
+                    : "Couldn't load friends. Please try again.";
+                setError(message);
             }
+        } finally {
+            if (!signal.aborted) setLoading(false);
         }
+    }
 
     useEffect(() => {
         const controller = new AbortController();
@@ -42,7 +41,7 @@ export default function Chats() {
         <div className="h-full">
             <div className="flex gap-2 h-full">
                 <aside className="h-full">
-                    {friends.map(friend => <ChatList key={friend.friendshipId} friend={friend} setSelectedFriend={setSelectedFriend} />)}
+                    {friends.map(friend => <ChatList key={friend.friendshipId} friend={friend} selectedFriendId={selectedFriend?.userId} setSelectedFriend={setSelectedFriend} />)}
                 </aside>
                 {selectedFriend
                     ? <>
