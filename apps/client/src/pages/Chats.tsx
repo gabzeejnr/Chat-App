@@ -41,7 +41,7 @@ export default function Chats() {
         <div className="h-full">
             <div className="flex gap-2 h-full">
                 <aside className="h-full">
-                    {friends.map(friend => <ChatList key={friend.friendshipId} friend={friend} selectedFriendId={selectedFriend?.userId} setSelectedFriend={setSelectedFriend} />)}
+                    {friends.map(friend => <ChatList key={friend.friendshipId} friend={friend} isSelected={friend.friendshipId === selectedFriend?.friendshipId} setSelectedFriend={setSelectedFriend} />)}
                 </aside>
                 {selectedFriend
                     ? <>
