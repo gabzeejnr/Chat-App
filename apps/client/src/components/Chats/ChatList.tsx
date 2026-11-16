@@ -5,6 +5,7 @@ import type { Friend } from "@chat-app/shared";
 
 interface ChatListProps {
     friend: Friend;
+    isSelected:
     selectedFriendId?: string;
     setSelectedFriend: Dispatch<SetStateAction<Friend | null>>
 }

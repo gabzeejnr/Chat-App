@@ -62,14 +62,14 @@ interface Messages {
     dateCreated: string;
 }
 
-function MessagesArea({ messages }: { messages: Messages[] }) {
-    const [sending, setSending] = useState(true);
+function MessagesArea({ messages, friendshipId }: { messages: Messages[]; friendshipId: string; }) {
+    const [sendingMessage, setSendingMessage] = useState<boolean>(true);
     const bottomRef = useRef<HTMLDivElement | null>(null);
     const size = 10;
 
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: "smooth" })
-    }, [messages.length])
+    }, [messages.length, friendshipId])
 
     return (
         <div className={`${styles.wrapper} h-full mb-15 overflow-y-auto scrollbar-thumb-expand`}>
@@ -80,7 +80,7 @@ function MessagesArea({ messages }: { messages: Messages[] }) {
                 >
                     <span>{message.content}</span>
                     <span className="self-end-safe">
-                        {sending ?
+                        {sendingMessage ?
                             <Clock3 size={size} />
                             : <Check size={size} />
                         }
@@ -146,7 +146,7 @@ export default function ChatArea({ friend }: { friend: Friend }) {
         <section className="flex-2 relative flex flex-col h-full px-2 overflow-hidden">
             {loadingMessages && <p role="status">Loading messages...</p>}
             {messagesError && <p role="alert" className="text-danger">{messagesError}</p>}
-            <MessagesArea messages={messages} />
+            <MessagesArea messages={messages} friendshipId={friendshipId} />
             <ChatInput username={username} onSend={(e) => handleSend(e)} />
         </section>
     )
