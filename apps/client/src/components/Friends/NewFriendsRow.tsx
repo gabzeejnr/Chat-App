@@ -7,7 +7,7 @@ interface NewfriendsRowProps {
     isSending: boolean;
     hasOutgoingRequest: boolean;
     hasIncomingRequest: boolean;
-    error?: string;
+    error?: string | undefined;
 }
 
 
