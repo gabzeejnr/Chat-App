@@ -3,6 +3,6 @@
 
 
 export {
-    SendHorizontal, Check, CheckCheck, Clock3, UserRound,
-    Settings, Menu, Ellipsis, MessageCircle,  UsersRound, UserRoundPlus
+    SendHorizontal, Check, CheckCheck, Clock3, Eye, EyeOff, UserRound, RotateCw,
+    Settings, Menu, Ellipsis, MessageCircle, UsersRound, UserRoundPlus, X
 } from "lucide-react"

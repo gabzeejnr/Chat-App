@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { UserRound, RotateCw } from "lucide-react";
+import { UserRound, RotateCw } from "../libs";
 import { FRIEND_API, axios } from "../apis/axios";
 import FriendRow from "../components/Friends/FriendRow";
 import type { Friend } from "@chat-app/shared"

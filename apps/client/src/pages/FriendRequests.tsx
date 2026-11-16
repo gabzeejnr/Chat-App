@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { UserRound, Check, X } from "lucide-react";
+import { UserRound, Check, X } from "../libs";
 import { FRIEND_API, axios } from "../apis/axios";
 import type { FriendRequest } from "@chat-app/shared";
 import { Link } from "react-router-dom";

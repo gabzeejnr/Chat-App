@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { API, axios } from "../apis/axios";
-import { UserRound } from "lucide-react";
+import { UserRound } from "../libs";
 import SearchBar from "../components/Friends/SearchBar";
 import type { ChangeEvent, SubmitEvent } from "react";
 import type { DiscoverableUser, User } from "@chat-app/shared";

@@ -1,4 +1,4 @@
-import { MessageCircle } from "lucide-react"
+import { MessageCircle } from "../libs"
 import { appName } from "../data";
 
 export default function IndexRoute() {

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AUTH } from "../apis/axios";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff } from "../libs";
 import { useUser } from "../context/UserContext";
 import ThemeButton from "../components/Buttons";
 import type { SubmitEvent } from "react";
