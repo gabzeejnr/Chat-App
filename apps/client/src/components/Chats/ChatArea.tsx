@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { ArrowLeft, SendHorizontal, Check, CheckCheck, Clock3 } from "../../libs";
-import type { SubmitEvent, KeyboardEvent } from "react";
+import type { SubmitEvent, KeyboardEvent, Dispatch, SetStateAction } from "react";
 import type { Friend } from "@chat-app/shared";
 import styles from "./Chats.module.scss"
 import { API, axios } from "../../apis/axios";
@@ -101,7 +101,7 @@ function MessagesArea({ messages, friendshipId, sendingMessage }: {
     )
 }
 
-export default function ChatArea({ friend, onBack }: { friend: Friend; onBack: () => void }) {
+export default function ChatArea({ friend, onBack,  }: { friend: Friend; setSelectedFriend: Dispatch<SetStateAction<Friend | null>>; onBack: () => void }) {
     const { username, userId, friendshipId } = friend;
     const [messages, setMessages] = useState<Messages[]>([]);
     const [loadingMessages, setLoadingMessages] = useState(true);
