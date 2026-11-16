@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { SendHorizontal, Clock3 } from "lucide-react";
+import { SendHorizontal, Check, CheckCheck, Clock3, } from "lucide-react";
 import type { SubmitEvent, KeyboardEvent } from "react";
 import type { Friend } from "@chat-app/shared";
 import styles from "./Chats.module.scss"
@@ -62,6 +62,7 @@ interface Messages {
 }
 
 function MessagesArea({ messages }: { messages: Messages[] }) {
+    const [sending, setSending] = useState(true);
     const bottomRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
@@ -77,7 +78,10 @@ function MessagesArea({ messages }: { messages: Messages[] }) {
                 >
                     <span>{message.content}</span>
                     <span className="self-end-safe">
-                        <Clock3 size={10} className="text-sm" />
+                        {sending ?
+                            <Clock />
+                            : <Check />
+                        }
                     </span>
                 </div>
             ))}
