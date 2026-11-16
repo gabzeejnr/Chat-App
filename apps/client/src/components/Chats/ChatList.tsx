@@ -1,7 +1,7 @@
 import ProfilePicture from "../Avatar";
-import { useState, type Dispatch, type SetStateAction } from "react";
-import type { Friend } from "@chat-app/shared";
 import { toInitials } from "../../libs";
+import type { Dispatch, SetStateAction } from "react";
+import type { Friend } from "@chat-app/shared";
 
 interface ChatListProps {
     friend: Friend;

@@ -64,6 +64,7 @@ interface Messages {
 function MessagesArea({ messages }: { messages: Messages[] }) {
     const [sending, setSending] = useState(true);
     const bottomRef = useRef<HTMLDivElement | null>(null);
+    const size = 10;
 
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -79,8 +80,8 @@ function MessagesArea({ messages }: { messages: Messages[] }) {
                     <span>{message.content}</span>
                     <span className="self-end-safe">
                         {sending ?
-                            <Clock3 />
-                            : <Check />
+                            <Clock3 size={size} />
+                            : <Check size={size} />
                         }
                     </span>
                 </div>
