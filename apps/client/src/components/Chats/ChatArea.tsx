@@ -59,6 +59,7 @@ interface Messages {
     id: string;
     role: "user" | "friend";
     content: string;
+    dateCreated: string;
 }
 
 function MessagesArea({ messages }: { messages: Messages[] }) {
@@ -131,7 +132,8 @@ export default function ChatArea({ friend }: { friend: Friend }) {
             const messageData: Messages = {
                 id: crypto.randomUUID(),
                 role: "user",
-                content: e
+                content: e,
+                dateCreated: new Date().toISOString()
             }
             await API.post("/test/send-message", { message: messageData })
             setMessages(previousMessages => [...previousMessages, messageData]);

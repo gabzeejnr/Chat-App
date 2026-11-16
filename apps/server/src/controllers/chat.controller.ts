@@ -9,6 +9,7 @@ interface Messages {
     id: string;
     role: "user" | "friend";
     content: string;
+    dateCreated: string;
 }
 
 async function addMessage(req: Request<{}, {}, { message: Messages }>, res: Response<ApiSuccess | ApiError>) {
