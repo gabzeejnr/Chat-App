@@ -5,7 +5,11 @@ import type { Friend } from "@chat-app/shared";
 import styles from "./Chats.module.scss"
 import { API, axios } from "../../apis/axios";
 
-function ChatInput({ username, onSend }: { username: string; onSend?: (message: string) => Promise<void> }) {
+function ChatInput({ username, sendingMessage, onSend }: {
+    username: string;
+    sendingMessage: boolean;
+    onSend?: (message: string) => Promise<void>;
+}) {
     const [value, setValue] = useState("");
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const canSend = value.trim().length > 0;
@@ -18,7 +22,7 @@ function ChatInput({ username, onSend }: { username: string; onSend?: (message: 
     }, [value]);
 
     async function send() {
-        if (!canSend) return;
+        if (!canSend || sendingMessage) return;
         try {
             await onSend?.(value.trim()); setValue("");
         } catch (err) {
@@ -42,11 +46,11 @@ function ChatInput({ username, onSend }: { username: string; onSend?: (message: 
         <form onSubmit={handleSubmit}
             className="absolute inset-x-0 bottom-0 mx-auto flex w-full max-w-full items-end gap-2 rounded-3xl border border-border bg-surface px-3 py-2 shadow-md"
         >
-            <textarea ref={textareaRef} rows={1} value={value} placeholder={`Chat with ${username}`}
+            <textarea ref={textareaRef} rows={1} value={value} disabled={sendingMessage} placeholder={`Chat with ${username}`}
                 onKeyDown={handleKeyDown} onChange={e => setValue(e.target.value)}
                 className="max-h-40 min-h-9 flex-1 resize-none overflow-y-auto bg-transparent py-2 text-foreground outline-none placeholder:text-muted"
             />
-            <button type="submit" disabled={!canSend} aria-label="Send message"
+            <button type="submit" disabled={!canSend || sendingMessage} aria-label={sendingMessage ? "Sending message" : "Send message"}
                 className="mb-0.5 flex size-9 shrink-0 items-center justify-center rounded-full bg-accent text-white transition-opacity duration-150 disabled:opacity-40"
             >
                 <SendHorizontal className="size-4" />
@@ -62,8 +66,11 @@ interface Messages {
     dateCreated: string;
 }
 
-function MessagesArea({ messages, friendshipId }: { messages: Messages[]; friendshipId: string; }) {
-    const [sendingMessage, setSendingMessage] = useState<boolean>(true);
+function MessagesArea({ messages, friendshipId, sendingMessage }: {
+    messages: Messages[];
+    friendshipId: string;
+    sendingMessage: boolean;
+}) {
     const bottomRef = useRef<HTMLDivElement | null>(null);
     const size = 10;
 
@@ -97,6 +104,7 @@ export default function ChatArea({ friend }: { friend: Friend }) {
     const [messages, setMessages] = useState<Messages[]>([]);
     const [loadingMessages, setLoadingMessages] = useState(true);
     const [messagesError, setMessagesError] = useState<string | null>(null);
+    const [sendingMessage, setSendingMessage] = useState(false);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -128,6 +136,7 @@ export default function ChatArea({ friend }: { friend: Friend }) {
     }, [friendshipId]);
 
     async function handleSend(e: string) {
+        setSendingMessage(true);
         try {
             const messageData: Messages = {
                 id: crypto.randomUUID(),
@@ -139,6 +148,9 @@ export default function ChatArea({ friend }: { friend: Friend }) {
             setMessages(previousMessages => [...previousMessages, messageData]);
         } catch (err) {
             console.error(err);
+            throw err;
+        } finally {
+            setSendingMessage(false);
         }
     }
 
@@ -146,8 +158,8 @@ export default function ChatArea({ friend }: { friend: Friend }) {
         <section className="flex-2 relative flex flex-col h-full px-2 overflow-hidden">
             {loadingMessages && <p role="status">Loading messages...</p>}
             {messagesError && <p role="alert" className="text-danger">{messagesError}</p>}
-            <MessagesArea messages={messages} friendshipId={friendshipId} />
-            <ChatInput username={username} onSend={(e) => handleSend(e)} />
+            <MessagesArea messages={messages} friendshipId={friendshipId} sendingMessage={sendingMessage} />
+            <ChatInput username={username} sendingMessage={sendingMessage} onSend={(e) => handleSend(e)} />
         </section>
     )
 }

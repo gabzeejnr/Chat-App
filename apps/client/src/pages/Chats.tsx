@@ -45,7 +45,7 @@ export default function Chats() {
                 </aside>
                 {selectedFriend
                     ? <>
-                        <ChatArea friend={selectedFriend} />
+                        <ChatArea key={selectedFriend.friendshipId} friend={selectedFriend} />
                         <ChatDetailsPane friend={selectedFriend} />
                     </>
                     : <div className="w-full grid place-items-center">
