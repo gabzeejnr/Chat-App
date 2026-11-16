@@ -4,6 +4,7 @@ import type { SubmitEvent, KeyboardEvent } from "react";
 import type { Friend } from "@chat-app/shared";
 import styles from "./Chats.module.scss"
 import { API, axios } from "../../apis/axios";
+import { toTime } from "../../utils";
 
 function ChatInput({ username, sendingMessage, onSend }: {
     username: string;
@@ -73,11 +74,6 @@ function MessagesArea({ messages, friendshipId, sendingMessage }: {
 }) {
     const bottomRef = useRef<HTMLDivElement | null>(null);
     const size = 10;
-    const timeSent = new Date().toLocaleTimeString('en-GB', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-    });
 
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -91,8 +87,8 @@ function MessagesArea({ messages, friendshipId, sendingMessage }: {
                     flex gap-1 py-2 px-4 mt-4 w-fit rounded-[20px] max-w-3/4 wrap-break-word relative`}
                 >
                     <span>{message.content}</span>
-                    <span className="self-end-safe flex">
-                        <span className="text-[12px]">{Date.UTC(message.dateCreated)}</span>
+                    <span className="self-end-safe flex items-end">
+                        <span className="text-[8px]">{toTime(message.dateCreated)}</span>
                         {sendingMessage ?
                             <Clock3 size={size} />
                             : <Check size={size} />
