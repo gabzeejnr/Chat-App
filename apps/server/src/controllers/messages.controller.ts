@@ -40,8 +40,8 @@ async function getMessages(req: Request, res: Response) {
             return;
         }
 
-        const { data } = await pool.query(
-            `SELECT * FROM `
+        const { rows } = await pool.query(
+            `SELECT * FROM messages m INNER JOIN `
         )
 
     } catch (err) {
