@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useUser } from "../../context/UserContext";
-import { API, axios, MESSAGE_API } from "../../apis/axios";
+import { axios, MESSAGE_API } from "../../apis/axios";
 import { ArrowLeft, SendHorizontal, Check, Clock3 } from "../../libs";
 import { toTime } from "../../utils";
 import type { SubmitEvent, KeyboardEvent } from "react";
