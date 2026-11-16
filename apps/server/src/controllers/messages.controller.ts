@@ -1,8 +1,8 @@
+import { pool } from "../config/database.js";
 import { serverError, userIdError } from "../libs/index.js";
 import type { UUID } from "node:crypto";
 import type { Request, Response } from "express";
 import type { ApiError, ApiSuccess, Messages } from "../types/index.js";
-import { pool } from "../config/database.js";
 
 async function sendMessage(req: Request<{}, {}, {}, { friendshipId?: UUID }>, res: Response<ApiSuccess | ApiError>): Promise<void> {
     try {
@@ -26,7 +26,7 @@ async function sendMessage(req: Request<{}, {}, {}, { friendshipId?: UUID }>, re
     }
 }
 
-async function getMessages(req: Request, res: Response) {
+async function getMessages(req: Request, res: Response<ApiSuccess | ApiError>) {
     try {
         const userId = res.locals.user?.userId;
         if (!userId) {
@@ -41,10 +41,17 @@ async function getMessages(req: Request, res: Response) {
         }
 
         const { rows } = await pool.query<Messages>(
-            `SELECT * FROM messages m INNER JOIN conversations c ON c.id = m.conversation_id`
+            `SELECT * FROM messages m INNER JOIN conversations c ON c.id = m.conversation_id WHERE c.friendship_id = $1`,
+            [friendshipId]
         )
 
-        if(rows.length <= 0)
+        res.status(200).json({
+            message: (rows.length
+                ? "Messages fetched successfully"
+                : "No messages found. Send a message to get started."
+            ),
+            data: rows
+        })
 
     } catch (err) {
         console.error("Failed to send message:", err);
