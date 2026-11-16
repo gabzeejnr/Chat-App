@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { SendHorizontal, Check, CheckCheck, Clock3 } from "../../libs";
+import { ArrowLeft, SendHorizontal, Check, CheckCheck, Clock3 } from "../../libs";
 import type { SubmitEvent, KeyboardEvent } from "react";
 import type { Friend } from "@chat-app/shared";
 import styles from "./Chats.module.scss"
@@ -101,7 +101,7 @@ function MessagesArea({ messages, friendshipId, sendingMessage }: {
     )
 }
 
-export default function ChatArea({ friend }: { friend: Friend }) {
+export default function ChatArea({ friend, onBack }: { friend: Friend; onBack: () => void }) {
     const { username, userId, friendshipId } = friend;
     const [messages, setMessages] = useState<Messages[]>([]);
     const [loadingMessages, setLoadingMessages] = useState(true);
@@ -156,11 +156,19 @@ export default function ChatArea({ friend }: { friend: Friend }) {
     }
 
     return (
-        <section className="flex-2 relative flex flex-col h-full px-2 overflow-hidden">
-            {loadingMessages && <p role="status">Loading messages...</p>}
-            {messagesError && <p role="alert" className="text-danger">{messagesError}</p>}
-            <MessagesArea messages={messages} friendshipId={friendshipId} sendingMessage={sendingMessage} />
-            <ChatInput username={username} sendingMessage={sendingMessage} onSend={(e) => handleSend(e)} />
+        <section className="flex h-full min-h-0 flex-col overflow-hidden px-2">
+            <button type="button" onClick={onBack} aria-label="Back to chats"
+                className="flex shrink-0 items-center gap-2 py-2 text-left md:hidden"
+            >
+                <ArrowLeft size={20} />
+                <span>{friend.displayName}</span>
+            </button>
+            <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden">
+                {loadingMessages && <p role="status">Loading messages...</p>}
+                {messagesError && <p role="alert" className="text-danger">{messagesError}</p>}
+                <MessagesArea messages={messages} friendshipId={friendshipId} sendingMessage={sendingMessage} />
+                <ChatInput username={username} sendingMessage={sendingMessage} onSend={(e) => handleSend(e)} />
+            </div>
         </section>
     )
 }

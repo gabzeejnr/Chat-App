@@ -1,21 +1,20 @@
 import ProfilePicture from "../Avatar";
 import { toInitials } from "../../libs";
-import type { Dispatch, SetStateAction } from "react";
 import type { Friend } from "@chat-app/shared";
 
 interface ChatListProps {
     friend: Friend;
     isSelected: boolean;
-    setSelectedFriend: Dispatch<SetStateAction<Friend | null>>
+    onSelectFriend: (friend: Friend) => void;
 }
 
-export default function ChatList({ friend, isSelected, setSelectedFriend }: ChatListProps) {
+export default function ChatList({ friend, isSelected, onSelectFriend }: ChatListProps) {
     const { avatarUrl, displayName, userId } = friend;
     const unreadCount = 99;
 
     return (
         <button type="button" className={`flex gap-3 w-full justify-between items-center rounded-lg cursor-pointer hover:bg-background ${isSelected ? "bg-background" : ""} px-1 py-2 transition-colors duration-300`}
-            onClick={() => setSelectedFriend(friend)}
+            onClick={() => onSelectFriend(friend)}
         >
             <ProfilePicture key={`${userId}-${avatarUrl}`} url={avatarUrl} name={displayName} size={14} initials={(toInitials(displayName)).slice(0, 2)} />
             <div className="flex flex-col h-full gap-2">
