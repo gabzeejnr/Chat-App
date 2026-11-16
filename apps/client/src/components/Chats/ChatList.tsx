@@ -1,5 +1,5 @@
 import ProfilePicture from "../Avatar";
-import type { Dispatch, SetStateAction } from "react";
+import { useState, type Dispatch, type SetStateAction } from "react";
 import type { Friend } from "@chat-app/shared";
 import { toInitials } from "../../libs";
 
@@ -13,12 +13,13 @@ export default function ChatList({ friend, setSelectedFriend, isSelected = false
 
     const { avatarUrl, displayName, userId } = friend;
     const unreadCount = 99;
+    const [isSelected, setIsSelected] = useState<boolean>(false)
 
     return (
         <button type="button" className="flex gap-3 w-full justify-between items-center cursor-pointer hover:bg-background px-1 py-2 transition-colors duration-300"
             onClick={() => {
                 setSelectedFriend(friend);
-                isSelected = true
+                setIsSelected(true)
             }}
         >
             <ProfilePicture key={`${userId}-${avatarUrl}`} url={avatarUrl} name={displayName} size={14} initials={(toInitials(displayName)).slice(0, 2)} />
