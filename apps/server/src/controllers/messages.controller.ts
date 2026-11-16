@@ -1,7 +1,7 @@
 import { serverError, userIdError } from "../libs/index.js";
 import type { UUID } from "node:crypto";
 import type { Request, Response } from "express";
-import type { ApiError, ApiSuccess } from "../types/index.js";
+import type { ApiError, ApiSuccess, Messages } from "../types/index.js";
 import { pool } from "../config/database.js";
 
 async function sendMessage(req: Request<{}, {}, {}, { friendshipId?: UUID }>, res: Response<ApiSuccess | ApiError>): Promise<void> {
@@ -40,15 +40,11 @@ async function getMessages(req: Request, res: Response) {
             return;
         }
 
-        const { rows } = await pool.query<{
-            id: UUID;
-            conversation_id: UUID;
-            sender_id: UUID;
-            content: string;
-            created_at: string;
-        }>(
+        const { rows } = await pool.query<Messages>(
             `SELECT * FROM messages m INNER JOIN conversations c ON c.id = m.conversation_id`
         )
+
+        if(rows.length <= 0)
 
     } catch (err) {
         console.error("Failed to send message:", err);
