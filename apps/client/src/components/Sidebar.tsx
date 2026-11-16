@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { useMediaQuery } from "../hooks";
 import { useSidebarData } from "../data";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle } from "../libs";
 import type { Dispatch, SetStateAction } from "react";
 
 

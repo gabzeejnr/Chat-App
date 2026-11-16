@@ -1,5 +1,5 @@
 import { useUser } from "../context/UserContext";
-import { Settings } from "lucide-react";
+import { Settings } from "../libs";
 
 export default function Footer() {
 

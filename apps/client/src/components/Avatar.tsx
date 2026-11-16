@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { UserRound } from "lucide-react";
+import { UserRound } from "../libs";
 
 interface AvatarProps {
     size?: number;

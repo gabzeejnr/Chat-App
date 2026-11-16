@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Menu, Ellipsis, MessageCircle } from "lucide-react";
+import { Menu, Ellipsis, MessageCircle } from "../libs";
 import { appName } from "../data";
 import type { Dispatch, SetStateAction } from "react";
 

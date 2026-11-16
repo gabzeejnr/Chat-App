@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { SendHorizontal, Check, CheckCheck, Clock3, } from "lucide-react";
+import { SendHorizontal, Check, CheckCheck, Clock3 } from "../../libs";
 import type { SubmitEvent, KeyboardEvent } from "react";
 import type { Friend } from "@chat-app/shared";
 import styles from "./Chats.module.scss"
@@ -79,7 +79,7 @@ function MessagesArea({ messages }: { messages: Messages[] }) {
                     <span>{message.content}</span>
                     <span className="self-end-safe">
                         {sending ?
-                            <Clock />
+                            <Clock3 />
                             : <Check />
                         }
                     </span>

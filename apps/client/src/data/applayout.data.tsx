@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { MessageCircle, UsersRound, UserRoundPlus, Settings } from "lucide-react";
+import { MessageCircle, UsersRound, UserRoundPlus, Settings } from "../libs";
 import ProfilePicture from "../components/Avatar"
 import { useUser } from "../context/UserContext";
 import type { SidebarProps } from "../types";
