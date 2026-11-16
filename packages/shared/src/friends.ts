@@ -20,7 +20,7 @@ interface FriendRequest {
 }
 
 interface Friend extends Omit<User, "email"> {
-    friendshipId: string;
+    friendshipId: UUID;
 }
 
 

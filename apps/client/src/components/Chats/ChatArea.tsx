@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useUser } from "../../context/UserContext";
 import { API, axios } from "../../apis/axios";
 import { ArrowLeft, SendHorizontal, Check, Clock3 } from "../../libs";
 import { toTime } from "../../utils";
@@ -6,8 +7,6 @@ import type { SubmitEvent, KeyboardEvent } from "react";
 import type { Friend, ClientMessage } from "@chat-app/shared";
 import type { ChatInputProps } from "../../types";
 import styles from "./Chats.module.scss";
-import { useUser } from "../../context/UserContext";
-import type { UUID } from "crypto";
 
 function ChatInput({ username, sendingMessage, onSend }: ChatInputProps) {
     const [value, setValue] = useState("");
@@ -63,9 +62,8 @@ function MessagesArea({ messages, friendshipId, sendingMessage, userId }: {
     messages: ClientMessage[];
     friendshipId: string;
     sendingMessage: boolean;
-    userId: UUID
+    userId: typeof friendshipId
 }) {
-    const { user } = useUser();
     const bottomRef = useRef<HTMLDivElement | null>(null);
     const size = 10;
 
@@ -161,7 +159,9 @@ export default function ChatArea({ friend, onBack }: { friend: Friend; onBack: (
             <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden">
                 {loadingMessages && <p role="status">Loading messages...</p>}
                 {messagesError && <p role="alert" className="text-danger">{messagesError}</p>}
-                <MessagesArea messages={messages} friendshipId={friendshipId} sendingMessage={sendingMessage} />
+                <MessagesArea messages={messages} friendshipId={friendshipId} sendingMessage={sendingMessage}
+                    userId={user?.userId}
+                />
                 <ChatInput username={username} sendingMessage={sendingMessage} onSend={(e) => handleSend(e)} />
             </div>
         </section>
