@@ -9,7 +9,7 @@ interface ChatListProps {
     setSelectedFriend: Dispatch<SetStateAction<Friend | null>>
 }
 
-export default function ChatList({ friend, setSelectedFriend, isSelected = false }: ChatListProps) {
+export default function ChatList({ friend, setSelectedFriend }: ChatListProps) {
 
     const { avatarUrl, displayName, userId } = friend;
     const unreadCount = 99;
