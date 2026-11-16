@@ -73,6 +73,11 @@ function MessagesArea({ messages, friendshipId, sendingMessage }: {
 }) {
     const bottomRef = useRef<HTMLDivElement | null>(null);
     const size = 10;
+    const timeSent = new Date().toLocaleTimeString('en-GB', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+    });
 
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -86,8 +91,8 @@ function MessagesArea({ messages, friendshipId, sendingMessage }: {
                     flex gap-1 py-2 px-4 mt-4 w-fit rounded-[20px] max-w-3/4 wrap-break-word relative`}
                 >
                     <span>{message.content}</span>
-                    <span className="self-end-safe flex ">
-                        <span>{message.dateCreated}</span>
+                    <span className="self-end-safe flex">
+                        <span className="text-[12px]">{Date.UTC(message.dateCreated)}</span>
                         {sendingMessage ?
                             <Clock3 size={size} />
                             : <Check size={size} />
