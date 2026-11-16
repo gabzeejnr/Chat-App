@@ -9,11 +9,10 @@ interface ChatListProps {
     setSelectedFriend: Dispatch<SetStateAction<Friend | null>>
 }
 
-export default function ChatList({ friend, setSelectedFriend }: ChatListProps) {
+export default function ChatList({ friend, setSelectedFriend, isSelected }: ChatListProps) {
 
     const { avatarUrl, displayName, userId } = friend;
     const unreadCount = 99;
-    const [isSelected, setIsSelected] = useState<boolean>(false)
 
     return (
         <button type="button" className="flex gap-3 w-full justify-between items-center cursor-pointer hover:bg-background px-1 py-2 transition-colors duration-300"

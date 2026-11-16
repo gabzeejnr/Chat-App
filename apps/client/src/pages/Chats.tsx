@@ -10,27 +10,27 @@ export default function Chats() {
     const [error, setError] = useState<string | null>(null);
     const [friends, setFriends] = useState<Friend[]>([]);
     const [selectedFriend, setSelectedFriend] = useState<Friend | null>(null);
+    
 
-
-    async function loadFriends(signal: AbortSignal) {
-        setLoading(true);
-        setError(null);
-        try {
-            const { data } = await FRIEND_API.get<{ message: string; data: Friend[] }>("", {
-                signal
-            });
-            setFriends(data.data);
-        } catch (err) {
-            if (!signal.aborted) {
-                const message = axios.isAxiosError<{ error?: string }>(err)
-                    ? err.response?.data.error || "Couldn't load friends. Please try again."
-                    : "Couldn't load friends. Please try again.";
-                setError(message);
+        async function loadFriends(signal: AbortSignal) {
+            setLoading(true);
+            setError(null);
+            try {
+                const { data } = await FRIEND_API.get<{ message: string; data: Friend[] }>("", {
+                    signal
+                });
+                setFriends(data.data);
+            } catch (err) {
+                if (!signal.aborted) {
+                    const message = axios.isAxiosError<{ error?: string }>(err)
+                        ? err.response?.data.error || "Couldn't load friends. Please try again."
+                        : "Couldn't load friends. Please try again.";
+                    setError(message);
+                }
+            } finally {
+                if (!signal.aborted) setLoading(false);
             }
-        } finally {
-            if (!signal.aborted) setLoading(false);
         }
-    }
 
     useEffect(() => {
         const controller = new AbortController();
