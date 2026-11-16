@@ -1,25 +1,31 @@
 import axios from "axios";
 
-const baseURL = "http://localhost:4000"
+const baseURL = "http://localhost:4000";
+const withCredentials = true
 
 const API = axios.create({
     baseURL: `${baseURL}/api`,
-    withCredentials: true
+    withCredentials
 });
 
 const AUTH = axios.create({
     baseURL: `${baseURL}/api/auth`,
-    withCredentials: true
+    withCredentials
 })
 
 const FRIEND_API = axios.create({
     baseURL: `${baseURL}/api/friends`,
-    withCredentials: true
+    withCredentials
 })
 
 const USER_API = axios.create({
     baseURL: `${baseURL}/api/users`,
-    withCredentials: true
+    withCredentials
+});
+
+const MESSAGE_API = axios.create({
+    baseURL: `${baseURL}/api/conversations`,
+    withCredentials
 })
 
-export { API, AUTH, FRIEND_API, USER_API, axios }
+export { API, AUTH, FRIEND_API, MESSAGE_API, USER_API, axios }

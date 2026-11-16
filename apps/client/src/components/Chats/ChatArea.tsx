@@ -133,15 +133,7 @@ export default function ChatArea({ friend, onBack }: { friend: Friend; onBack: (
     async function handleSend(e: string) {
         setSendingMessage(true);
         try {
-            const messageData: ClientMessage = {
-                id: crypto.randomUUID(),
-                senderId: user?.userId,
-                role: "user",
-                content: e,
-                dateCreated: new Date().toISOString()
-            }
-            await API.post("/test/send-message", { message: messageData })
-            setMessages(previousMessages => [...previousMessages, messageData]);
+            await API.post("/test/send-message", { content: e })
             setSendingMessage(false);
         } catch (err) {
             console.error(err);
