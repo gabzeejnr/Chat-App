@@ -26,7 +26,7 @@ async function sendMessage(req: Request<{}, {}, {}, { friendshipId?: UUID }>, re
     }
 }
 
-async function getMessages(req: Request, res: Response<ApiSuccess | ApiError>) {
+async function getMessages(req: Request<{}, {}, {}, { friendshipId?: UUID }>, res: Response<ApiSuccess<Messages[] | Messages> | ApiError>): Promise<void> {
     try {
         const userId = res.locals.user?.userId;
         if (!userId) {
@@ -36,26 +36,43 @@ async function getMessages(req: Request, res: Response<ApiSuccess | ApiError>) {
 
         const { friendshipId } = req.query;
         if (!friendshipId) {
-            res.status(400).json({ error: "Invalid request parameter." })
+            res.status(400).json({ error: "Invalid request parameter." });
             return;
         }
 
-        const { rows } = await pool.query<Messages>(
-            `SELECT * FROM messages m INNER JOIN conversations c ON c.id = m.conversation_id WHERE c.friendship_id = $1`,
-            [friendshipId]
-        )
+        const { rows } = await pool.query<Messages>(`
+            SELECT m.id, m.conversation_id, m.sender_id, m.content, m.created_at
+            FROM messages m
+            JOIN conversations c ON c.id = m.conversation_id
+            JOIN friendships f ON f.id = c.friendship_id
+            WHERE c.friendship_id = $1
+              AND (f.user_one_id = $2 OR f.user_two_id = $2)
+            ORDER BY m.created_at ASC
+        `, [friendshipId, userId]);
+
+        if (!rows.length) {
+            const { rows: friendshipRows } = await pool.query<{ id: UUID }>(`
+                SELECT id
+                FROM friendships
+                WHERE id = $1 AND (user_one_id = $2 OR user_two_id = $2)
+            `, [friendshipId, userId]);
+
+            if (!friendshipRows.length) {
+                res.status(404).json({ error: "Friendship not found." });
+                return;
+            }
+        }
 
         res.status(200).json({
             message: (rows.length
-                ? "Messages fetched successfully"
+                ? "Messages fetched successfully."
                 : "No messages found. Send a message to get started."
             ),
             data: rows
-        })
-
+        });
     } catch (err) {
-        console.error("Failed to send message:", err);
-        res.status(500).json(serverError)
+        console.error("Failed to fetch messages:", err);
+        res.status(500).json(serverError);
     }
 }
 
