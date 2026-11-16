@@ -5,12 +5,11 @@ import { toInitials } from "../../libs";
 
 interface ChatListProps {
     friend: Friend;
-    isSelected: boolean;
     selectedFriendId?: string;
     setSelectedFriend: Dispatch<SetStateAction<Friend | null>>
 }
 
-export default function ChatList({ friend, selectedFriendId, setSelectedFriend, isSelected }: ChatListProps) {
+export default function ChatList({ friend, selectedFriendId, setSelectedFriend }: ChatListProps) {
 
     const { avatarUrl, displayName, userId } = friend;
     const unreadCount = 99;
