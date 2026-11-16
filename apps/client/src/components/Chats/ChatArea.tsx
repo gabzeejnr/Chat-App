@@ -62,7 +62,7 @@ function MessagesArea({ messages, friendshipId, sendingMessage, userId }: {
     messages: ClientMessage[];
     friendshipId: Friend["userId"];
     sendingMessage: boolean;
-    userId: Friend["userId"]
+    userId: Friend["userId"] | undefined
 }) {
     const bottomRef = useRef<HTMLDivElement | null>(null);
     const size = 10;
@@ -133,8 +133,9 @@ export default function ChatArea({ friend, onBack }: { friend: Friend; onBack: (
     async function handleSend(e: string) {
         setSendingMessage(true);
         try {
-            const messageData: Messages = {
+            const messageData: ClientMessage = {
                 id: crypto.randomUUID(),
+                senderId: user?.userId,
                 role: "user",
                 content: e,
                 dateCreated: new Date().toISOString()
