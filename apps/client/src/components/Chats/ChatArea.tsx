@@ -87,7 +87,7 @@ function MessagesArea({ messages, friendshipId, sendingMessage }: {
                 >
                     <span>{message.content}</span>
                     <span className="self-end-safe flex ">
-                        <span>{}</span>
+                        <span>{message.dateCreated}</span>
                         {sendingMessage ?
                             <Clock3 size={size} />
                             : <Check size={size} />

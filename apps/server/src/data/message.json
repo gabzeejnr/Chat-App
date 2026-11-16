@@ -93,5 +93,11 @@
     "id": "daafd38c-73b2-4341-81ad-912537067328",
     "role": "user",
     "content": "This is a longer chat message so I can actually test the message bubble to add a loading and date func"
+  },
+  {
+    "id": "742ce2ad-76f3-421c-a5f9-c36c6555f322",
+    "role": "user",
+    "content": "Test Again",
+    "dateCreated": "2026-11-16T08:49:19.029Z"
   }
 ]
