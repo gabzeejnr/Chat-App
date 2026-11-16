@@ -1,6 +1,5 @@
 import { pool } from "../config/database.js";
 import { serverError, userIdError } from "../libs/index.js";
-import type { UUID } from "node:crypto";
 import type { Request, Response } from "express";
 import type { PoolClient } from "pg";
 import type { ClientMessage } from "@chat-app/shared";
@@ -8,7 +7,7 @@ import type { ApiError, ApiSuccess, Messages } from "../types/index.js";
 import type { SendMessageInput } from "../apis/conversations.js";
 
 
-async function sendMessage(req: Request<{ friendshipId: UUID }, {}, { content: string }>, res: Response<ApiSuccess<ClientMessage> | ApiError>): Promise<void> {
+async function sendMessage(req: Request<{ friendshipId: Messages["id"] }, {}, { content: string }>, res: Response<ApiSuccess<ClientMessage> | ApiError>): Promise<void> {
     const userId = res.locals.user?.userId;
 
     if (!userId) {
@@ -30,7 +29,7 @@ async function sendMessage(req: Request<{ friendshipId: UUID }, {}, { content: s
         client = await pool.connect();
         await client.query("BEGIN");
 
-        const { rows: friendshipRows } = await client.query<{ id: UUID }>(
+        const { rows: friendshipRows } = await client.query<{ id: Messages["id"] }>(
             `SELECT id FROM friendships WHERE id = $1 AND (user_one_id = $2 OR user_two_id = $2)`,
             [friendshipId, userId]
         );
@@ -46,7 +45,7 @@ async function sendMessage(req: Request<{ friendshipId: UUID }, {}, { content: s
             [friendshipId]
         );
 
-        const { rows: conversationRows } = await client.query<{ id: UUID }>(
+        const { rows: conversationRows } = await client.query<{ id: Messages["id"] }>(
             `SELECT id FROM conversations WHERE friendship_id = $1`,
             [friendshipId]
         );
@@ -88,7 +87,7 @@ async function sendMessage(req: Request<{ friendshipId: UUID }, {}, { content: s
 }
 
 
-async function getMessages(req: Request<{}, {}, {}, { friendshipId?: UUID }>, res: Response<ApiSuccess<Messages[] | Messages> | ApiError>): Promise<void> {
+async function getMessages(req: Request<{}, {}, {}, { friendshipId?: Messages["id"] }>, res: Response<ApiSuccess<Messages[] | Messages> | ApiError>): Promise<void> {
     try {
         const userId = res.locals.user?.userId;
         if (!userId) {
@@ -113,7 +112,7 @@ async function getMessages(req: Request<{}, {}, {}, { friendshipId?: UUID }>, re
         `, [friendshipId, userId]);
 
         if (!rows.length) {
-            const { rows: friendshipRows } = await pool.query<{ id: UUID }>(`
+            const { rows: friendshipRows } = await pool.query<{ id: Messages["id"] }>(`
                 SELECT id
                 FROM friendships
                 WHERE id = $1 AND (user_one_id = $2 OR user_two_id = $2)
