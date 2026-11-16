@@ -1,11 +1,12 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useUser } from "../../context/UserContext";
+import { useSocket } from "../../context/SocketContext";
 import { axios, MESSAGE_API } from "../../apis/axios";
-import { ArrowLeft, SendHorizontal, Check, Clock3 } from "../../libs";
+import { ArrowLeft, SendHorizontal } from "../../libs";
 import { toTime } from "../../utils";
 import type { SubmitEvent, KeyboardEvent } from "react";
-import type { Friend, ClientMessage } from "@chat-app/shared";
-import type { ChatInputProps } from "../../types";
+import type { Friend, ClientMessage, UUID } from "@chat-app/shared";
+import type { ChatInputProps, MessagesAreaProps } from "../../types";
 import styles from "./Chats.module.scss";
 
 function ChatInput({ username, sendingMessage, onSend }: ChatInputProps) {
@@ -58,14 +59,8 @@ function ChatInput({ username, sendingMessage, onSend }: ChatInputProps) {
     )
 }
 
-function MessagesArea({ messages, friendshipId, sendingMessage, userId }: {
-    messages: ClientMessage[];
-    friendshipId: Friend["userId"];
-    sendingMessage: boolean;
-    userId: Friend["userId"] | undefined
-}) {
+function MessagesArea({ messages, friendshipId, userId }: MessagesAreaProps) {
     const bottomRef = useRef<HTMLDivElement | null>(null);
-    const size = 10;
 
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -73,21 +68,20 @@ function MessagesArea({ messages, friendshipId, sendingMessage, userId }: {
 
     return (
         <div className={`${styles.wrapper} h-full mb-15 overflow-y-auto scrollbar-thumb-expand`}>
-            {messages.map((message) => (
-                <div key={message.id}
-                    className={`${message.senderId === userId ? styles.user : styles.friend}
+            {!messages.length
+                ? <div className="h-full grid place-items-center">No messages yet, send a message to get started.</div>
+                : messages.map(message => (
+                    <div key={message.id}
+                        className={`${message.senderId === userId ? styles.user : styles.friend}
                     flex gap-1 py-2 px-4 mt-4 w-fit rounded-[20px] max-w-3/4 wrap-break-word relative`}
-                >
-                    <span>{message.content}</span>
-                    <span className="self-end-safe flex items-end">
-                        <span className="text-[8px]">{toTime(message.createdAt)}</span>
-                        {sendingMessage ?
-                            <Clock3 size={size} />
-                            : <Check size={size} />
-                        }
-                    </span>
-                </div>
-            ))}
+                    >
+                        <span>{message.content}</span>
+                        <span className="self-end-safe flex items-end">
+                            <span className="text-[8px]">{toTime(message.createdAt)}</span>
+                        </span>
+                    </div>
+                ))
+            }
             <div ref={bottomRef} />
         </div>
     )
@@ -95,49 +89,67 @@ function MessagesArea({ messages, friendshipId, sendingMessage, userId }: {
 
 export default function ChatArea({ friend, onBack }: { friend: Friend; onBack: () => void }) {
     const { user } = useUser();
+    const { subscribeToNewMessages } = useSocket();
     const { username, friendshipId } = friend;
+    const currentFriendship = useRef<UUID | null>(friendshipId);
     const [messages, setMessages] = useState<ClientMessage[]>([]);
     const [loadingMessages, setLoadingMessages] = useState(true);
     const [messagesError, setMessagesError] = useState<string | null>(null);
     const [sendingMessage, setSendingMessage] = useState(false);
 
+    async function loadMessages(signal: AbortSignal) {
+        const activeFriendshipId = friendshipId;
+        try {
+            setMessages([]);
+            setMessagesError(null);
+            setLoadingMessages(true);
+
+            const { data } = await MESSAGE_API.get<{ message: string; data: ClientMessage[] }>(`/${activeFriendshipId}/messages`, { signal });
+            if (signal.aborted || activeFriendshipId !== currentFriendship.current) return;
+            setMessages(data.data);
+        } catch (err) {
+            if (!signal.aborted && activeFriendshipId === currentFriendship.current) {
+                const message = axios.isAxiosError<{ error?: string }>(err)
+                    ? err.response?.data.error || "Couldn't load messages. Please try again."
+                    : "Couldn't load messages. Please try again.";
+                setMessagesError(message);
+            }
+        } finally {
+            if (!signal.aborted && activeFriendshipId === currentFriendship.current) setLoadingMessages(false);
+        }
+    }
+
+    useLayoutEffect(() => {
+        currentFriendship.current = friendshipId;
+    }, [friendshipId]);
+
+    useEffect(() => subscribeToNewMessages(({ friendshipId: eventFriendshipId, message }) => {
+        if (eventFriendshipId !== currentFriendship.current) return;
+        setMessages(previous => [...previous, message]);
+    }), [friendshipId, subscribeToNewMessages]);
+
     useEffect(() => {
         const controller = new AbortController();
-
-        async function loadMessages() {
-            try {
-                setMessages([]);
-                setMessagesError(null);
-                setLoadingMessages(true);
-
-                const { data } = await MESSAGE_API.get<{ message: string; data: ClientMessage[] }>(`/:${friendshipId}/messages`, {
-                    signal: controller.signal
-                });
-                setMessages(data.data);
-            } catch (err) {
-                if (!controller.signal.aborted) {
-                    const message = axios.isAxiosError<{ error?: string }>(err)
-                        ? err.response?.data.error || "Couldn't load messages. Please try again."
-                        : "Couldn't load messages. Please try again.";
-                    setMessagesError(message);
-                }
-            } finally {
-                if (!controller.signal.aborted) setLoadingMessages(false);
-            }
-        }
-
-        void loadMessages();
+        setSendingMessage(false);
+        void loadMessages(controller.signal);
         return () => controller.abort();
     }, [friendshipId]);
 
-    async function handleSend(e: string) {
+    async function handleSend(message: string) {
         setSendingMessage(true);
+        const activeFriendshipId = friendshipId
         try {
-            await MESSAGE_API.post(`/:${friendshipId}/messages`, { content: e })
-            setSendingMessage(false);
+            const { data } = await MESSAGE_API.post<{ message: string; data: ClientMessage }>(`/${activeFriendshipId}/messages`, { content: message })
+            if (activeFriendshipId !== currentFriendship.current) return;
+
+            setMessages(previous => [...previous, data.data]);
         } catch (err) {
             console.error(err);
             throw err;
+        } finally {
+            if (activeFriendshipId === currentFriendship.current) {
+                setSendingMessage(false);
+            }
         }
     }
 
@@ -152,9 +164,7 @@ export default function ChatArea({ friend, onBack }: { friend: Friend; onBack: (
             <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden">
                 {loadingMessages && <p role="status">Loading messages...</p>}
                 {messagesError && <p role="alert" className="text-danger">{messagesError}</p>}
-                <MessagesArea messages={messages} friendshipId={friendshipId} sendingMessage={sendingMessage}
-                    userId={user?.userId}
-                />
+                <MessagesArea messages={messages} friendshipId={friendshipId} userId={user?.userId} />
                 <ChatInput username={username} sendingMessage={sendingMessage} onSend={(e) => handleSend(e)} />
             </div>
         </section>

@@ -8,5 +8,10 @@ interface ClientMessage {
     createdAt: string;
 }
 
+interface NewMessageEvent {
+    friendshipId: UUID;
+    message: ClientMessage;
+}
 
-export type { ClientMessage }
+
+export type { ClientMessage, NewMessageEvent }

@@ -36,8 +36,8 @@ io.use((socket, next) => {
     const cookieHeader = socket.handshake.headers.cookie;
     const accessTokenCookie = cookieHeader
         ?.split(";")
-        .map((cookie) => cookie.trim())
-        .find((cookie) => cookie.startsWith("accessToken="));
+        .map(cookie => cookie.trim())
+        .find(cookie => cookie.startsWith("accessToken="));
     const token = accessTokenCookie?.slice("accessToken=".length);
 
     if (!token) {

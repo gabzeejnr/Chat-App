@@ -6,6 +6,11 @@ import type { SocketContextProp } from "../types";
 
 const SocketContext = createContext<SocketContextProp | null>(null);
 
+const subscribeToNewMessages: SocketContextProp["subscribeToNewMessages"] = listener => {
+    socket.on("message:new", listener);
+    return () => socket.off("message:new", listener);
+};
+
 export default function SocketProvider({ children }: { children: ReactNode }) {
 
     const [isConnected, setIsConnected] = useState(socket.connected);
@@ -33,9 +38,10 @@ export default function SocketProvider({ children }: { children: ReactNode }) {
         setConnectionError(err.message);
         setIsReconnecting(socket.active);
     }
+
     const value: SocketContextProp = {
         isConnected, socket, connectionError,
-        isReconnecting
+        isReconnecting, subscribeToNewMessages
     }
 
 

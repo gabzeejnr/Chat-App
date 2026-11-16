@@ -1,5 +1,5 @@
 import { socket } from "../config/socket";
-import type { User } from "@chat-app/shared";
+import type { NewMessageEvent, User } from "@chat-app/shared";
 
 type Theme = "light" | "dark" | "system";
 
@@ -8,6 +8,7 @@ interface SocketContextProp {
     socket: typeof socket;
     connectionError: string | null;
     isReconnecting: boolean;
+    subscribeToNewMessages: (listener: (event: NewMessageEvent) => void) => () => void;
 }
 
 interface UserContextProp {
