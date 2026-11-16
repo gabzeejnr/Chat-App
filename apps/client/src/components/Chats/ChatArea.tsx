@@ -60,9 +60,9 @@ function ChatInput({ username, sendingMessage, onSend }: ChatInputProps) {
 
 function MessagesArea({ messages, friendshipId, sendingMessage, userId }: {
     messages: ClientMessage[];
-    friendshipId: string;
+    friendshipId: Friend["userId"];
     sendingMessage: boolean;
-    userId: typeof friendshipId
+    userId: Friend["userId"]
 }) {
     const bottomRef = useRef<HTMLDivElement | null>(null);
     const size = 10;
@@ -96,7 +96,7 @@ function MessagesArea({ messages, friendshipId, sendingMessage, userId }: {
 export default function ChatArea({ friend, onBack }: { friend: Friend; onBack: () => void }) {
     const { user } = useUser();
     const { username, friendshipId } = friend;
-    const [messages, setMessages] = useState<Messages[]>([]);
+    const [messages, setMessages] = useState<ClientMessage[]>([]);
     const [loadingMessages, setLoadingMessages] = useState(true);
     const [messagesError, setMessagesError] = useState<string | null>(null);
     const [sendingMessage, setSendingMessage] = useState(false);
@@ -110,7 +110,7 @@ export default function ChatArea({ friend, onBack }: { friend: Friend; onBack: (
                 setMessagesError(null);
                 setLoadingMessages(true);
 
-                const { data } = await API.get<{ message: string; data: Messages[] }>("/test/messages", {
+                const { data } = await API.get<{ message: string; data: ClientMessage[] }>("/test/messages", {
                     signal: controller.signal
                 });
                 setMessages(data.data);
