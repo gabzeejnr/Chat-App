@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useUser } from "../../context/UserContext";
-import { API, axios } from "../../apis/axios";
+import { API, axios, MESSAGE_API } from "../../apis/axios";
 import { ArrowLeft, SendHorizontal, Check, Clock3 } from "../../libs";
 import { toTime } from "../../utils";
 import type { SubmitEvent, KeyboardEvent } from "react";
@@ -110,7 +110,7 @@ export default function ChatArea({ friend, onBack }: { friend: Friend; onBack: (
                 setMessagesError(null);
                 setLoadingMessages(true);
 
-                const { data } = await API.get<{ message: string; data: ClientMessage[] }>("/test/messages", {
+                const { data } = await MESSAGE_API.get<{ message: string; data: ClientMessage[] }>(`/:${friendshipId}/messages`, {
                     signal: controller.signal
                 });
                 setMessages(data.data);
@@ -133,7 +133,7 @@ export default function ChatArea({ friend, onBack }: { friend: Friend; onBack: (
     async function handleSend(e: string) {
         setSendingMessage(true);
         try {
-            await API.post("/test/send-message", { content: e })
+            await MESSAGE_API.post(`/:${friendshipId}/messages`, { content: e })
             setSendingMessage(false);
         } catch (err) {
             console.error(err);
