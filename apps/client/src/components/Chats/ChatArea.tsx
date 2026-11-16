@@ -19,8 +19,12 @@ function ChatInput({ username, onSend }: { username: string; onSend?: (message: 
 
     async function send() {
         if (!canSend) return;
-        onSend?.(value.trim());
-        setValue("");
+        try {
+            await onSend?.(value.trim());
+            setValue("");
+        } catch (err) {
+            console.error("I'll put something here later:", err);
+        }
     };
 
     function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
