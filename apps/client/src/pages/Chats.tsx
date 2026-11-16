@@ -17,6 +17,11 @@ export default function Chats() {
         setIsChatOpen(true);
     }
 
+    function onBack(){
+        setIsChatOpen(false);
+        setSelectedFriend(null);
+    }
+
     async function loadFriends(signal: AbortSignal) {
         setLoading(true);
         setError(null);
@@ -43,6 +48,7 @@ export default function Chats() {
         return () => controller.abort();
     }, []);
 
+
     return (
         <div className="h-full">
             <div className="relative flex h-full overflow-hidden md:gap-2">
@@ -52,7 +58,7 @@ export default function Chats() {
                 {selectedFriend
                     ? <>
                         <div className={`absolute inset-0 z-20 h-full w-full bg-white transition-transform duration-300 ease-in-out md:relative md:inset-auto md:z-auto md:w-auto md:flex-2 md:translate-x-0 ${isChatOpen ? "translate-x-0" : "translate-x-full"}`}>
-                            <ChatArea key={selectedFriend.friendshipId} friend={selectedFriend} onBack={() => setIsChatOpen(false)} />
+                            <ChatArea key={selectedFriend.friendshipId} friend={selectedFriend} onBack={onBack} />
                         </div>
                         <ChatDetailsPane friend={selectedFriend} />
                     </>

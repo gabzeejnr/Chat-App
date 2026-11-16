@@ -1,16 +1,12 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { ArrowLeft, SendHorizontal, Check, CheckCheck, Clock3 } from "../../libs";
-import type { SubmitEvent, KeyboardEvent, Dispatch, SetStateAction } from "react";
+import { ArrowLeft, SendHorizontal, Check, Clock3 } from "../../libs";
+import type { SubmitEvent, KeyboardEvent } from "react";
 import type { Friend } from "@chat-app/shared";
 import styles from "./Chats.module.scss"
 import { API, axios } from "../../apis/axios";
 import { toTime } from "../../utils";
 
-function ChatInput({ username, sendingMessage, onSend }: {
-    username: string;
-    sendingMessage: boolean;
-    onSend?: (message: string) => Promise<void>;
-}) {
+function ChatInput({ username, sendingMessage, onSend }: ) {
     const [value, setValue] = useState("");
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const canSend = value.trim().length > 0;
@@ -101,8 +97,8 @@ function MessagesArea({ messages, friendshipId, sendingMessage }: {
     )
 }
 
-export default function ChatArea({ friend, onBack,  }: { friend: Friend; setSelectedFriend: Dispatch<SetStateAction<Friend | null>>; onBack: () => void }) {
-    const { username, userId, friendshipId } = friend;
+export default function ChatArea({ friend, onBack }: { friend: Friend; onBack: () => void }) {
+    const { username, friendshipId } = friend;
     const [messages, setMessages] = useState<Messages[]>([]);
     const [loadingMessages, setLoadingMessages] = useState(true);
     const [messagesError, setMessagesError] = useState<string | null>(null);
