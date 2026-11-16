@@ -73,10 +73,10 @@ function MessagesArea({ messages }: { messages: Messages[] }) {
             {messages.map((message) => (
                 <div key={message.id}
                     className={`${message.role === "user" ? styles.user : styles.friend}
-                    flex  py-2 px-4 mt-4 w-fit rounded-[20px] max-w-3/4 wrap-break-word relative`}
+                    flex gap-1 py-2 px-4 mt-4 w-fit rounded-[20px] max-w-3/4 wrap-break-word relative`}
                 >
                     <span>{message.content}</span>
-                    <span className="self-end">
+                    <span className="self-end-safe">
                         <Clock3 size={10} className="text-sm" />
                     </span>
                 </div>
