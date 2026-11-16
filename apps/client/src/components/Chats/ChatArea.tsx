@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { SendHorizontal } from "lucide-react";
-import type { SubmitEvent, KeyboardEvent } from "react";
+1111111111111111`````````````````````````````````````qqqqimport type { SubmitEvent, KeyboardEvent } from "react";
 import type { Friend } from "@chat-app/shared";
 import styles from "./Chats.module.scss"
 import { API, axios } from "../../apis/axios";
@@ -20,8 +20,7 @@ function ChatInput({ username, onSend }: { username: string; onSend?: (message: 
     async function send() {
         if (!canSend) return;
         try {
-            await onSend?.(value.trim());
-            setValue("");
+            await onSend?.(value.trim());            setValue("");
         } catch (err) {
             console.error("I'll put something here later:", err);
         }
@@ -82,7 +81,7 @@ function MessagesArea({ messages }: { messages: Messages[] }) {
     )
 }
 
-export default function ChatArea({ friend }: { friend: Friend }) {
+e//xport default function ChatArea({ friend }: { friend: Friend }) {
     const { username, userId } = friend;
     const [messages, setMessages] = useState<Messages[]>([]);
     const [loadingMessages, setLoadingMessages] = useState(true);
