@@ -86,7 +86,8 @@ function MessagesArea({ messages, friendshipId, sendingMessage }: {
                     flex gap-1 py-2 px-4 mt-4 w-fit rounded-[20px] max-w-3/4 wrap-break-word relative`}
                 >
                     <span>{message.content}</span>
-                    <span className="self-end-safe">
+                    <span className="self-end-safe flex ">
+                        <span>{}</span>
                         {sendingMessage ?
                             <Clock3 size={size} />
                             : <Check size={size} />
@@ -146,11 +147,10 @@ export default function ChatArea({ friend }: { friend: Friend }) {
             }
             await API.post("/test/send-message", { message: messageData })
             setMessages(previousMessages => [...previousMessages, messageData]);
+            setSendingMessage(false);
         } catch (err) {
             console.error(err);
             throw err;
-        } finally {
-            setSendingMessage(false);
         }
     }
 
