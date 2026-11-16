@@ -6,7 +6,7 @@ import { sendMessageZod } from "../../apis/conversations.js";
 
 const conversationRouter: RouterType = Router();
 
-conversationRouter.get("/:friendshipId/messages", validateSchema, getMessages);
+conversationRouter.get("/:friendshipId/messages", getMessages);
 conversationRouter.post("/:friendshipId/messages", validateSchema(sendMessageZod), sendMessage);
 
 export { conversationRouter }
