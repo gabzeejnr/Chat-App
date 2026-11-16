@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { SendHorizontal } from "lucide-react";
+import { SendHorizontal, Clock3 } from "lucide-react";
 import type { SubmitEvent, KeyboardEvent } from "react";
 import type { Friend } from "@chat-app/shared";
 import styles from "./Chats.module.scss"
@@ -73,10 +73,12 @@ function MessagesArea({ messages }: { messages: Messages[] }) {
             {messages.map((message) => (
                 <div key={message.id}
                     className={`${message.role === "user" ? styles.user : styles.friend}
-                    py-2 px-4 mt-4 w-fit rounded-[20px] max-w-3/4 wrap-break-word relative`}
+                    flex  py-2 px-4 mt-4 w-fit rounded-[20px] max-w-3/4 wrap-break-word relative`}
                 >
-                    {message.content}
-                <span className="absolute text-sm bottom-0 right-3">t</span>
+                    <span>{message.content}</span>
+                    <span className="self-end">
+                        <Clock3 size={10} className="text-sm" />
+                    </span>
                 </div>
             ))}
             <div ref={bottomRef} />
