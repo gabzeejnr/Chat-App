@@ -1,16 +1,17 @@
+import type { UUID } from "./global.js";
 import type { User } from "./users.js";
 
 interface Friendship {
-    id: string;
-    user_one_id: string;
-    user_two_id: string;
+    id: UUID;
+    user_one_id: UUID;
+    user_two_id: UUID;
     created_at: Date;
 }
 
 interface FriendRequest {
-    id: string;
-    senderId: string;
-    receiverId: string;
+    id: UUID;
+    senderId: UUID;
+    receiverId: UUID;
     status: "pending" | "accepted" | "rejected";
     createdAt: string;
     username: string;

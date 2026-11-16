@@ -1,5 +1,7 @@
+import type { UUID } from "./global.js";
+
 interface User {
-    userId: string;
+    userId: UUID;
     username: string;
     displayName: string;
     email: string;
