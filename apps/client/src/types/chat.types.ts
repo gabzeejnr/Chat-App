@@ -1,9 +1,16 @@
-import type { ClientMessage, UUID } from "@chat-app/shared";
+import type { ClientMessage, UUID, Friend } from "@chat-app/shared";
+
+interface ChatListProps {
+    friend: Friend;
+    isSelected: boolean;
+    lastMessage: string | undefined;
+    onSelectFriend: (friend: Friend) => void;
+}
 
 interface ChatInputProps {
     username: string;
     sendingMessage: boolean;
-    onSend?: (message: string) => Promise<void>;
+    onSend?: ((message: string) => Promise<void>) | undefined;
 }
 
 interface MessagesAreaProps {
@@ -12,4 +19,10 @@ interface MessagesAreaProps {
     userId: UUID | undefined;
 }
 
-export type { ChatInputProps, MessagesAreaProps }
+interface ChatAreaProps {
+    friend: Friend;
+    onSend?: ((message: string) => Promise<void>) | undefined;
+    onBack: () => void;
+}
+
+export type { ChatAreaProps, ChatInputProps, ChatListProps, MessagesAreaProps }

@@ -10,5 +10,13 @@ interface SidebarProps {
     bottom?: true;
 }
 
+interface PaginationProps {
+    page: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+    onPageChange: (page: number) => void;
+}
 
-export type { SidebarProps }
+
+export type { PaginationProps, SidebarProps }

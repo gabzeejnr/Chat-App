@@ -4,7 +4,6 @@ import { authRouter } from "./auth.route.js";
 import { friendRouter } from "./friends.route.js";
 import { usersRouter } from "./users.routes.js";
 import { conversationRouter } from "./conversations.routes.js";
-import { testRoute } from "./test.routes.js";
 import { requireAuth } from "../../middlewares/auth.middleware.js";
 import type { Router as RouterType } from "express";
 
@@ -16,6 +15,5 @@ apiRouter.use(requireAuth);
 apiRouter.use("/users", usersRouter);
 apiRouter.use("/friends", friendRouter);
 apiRouter.use("/conversations", conversationRouter);
-apiRouter.use("/test", testRoute);
 
 export { apiRouter }

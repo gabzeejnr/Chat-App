@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import { UserRound, Check, X } from "../libs";
 import { FRIEND_API, axios } from "../apis/axios";
-import type { FriendRequest } from "@chat-app/shared";
+import type { FriendRequest, PaginatedApiSuccess } from "@chat-app/shared";
 import { Link } from "react-router-dom";
 import { useUser } from "../context/UserContext";
+import Pagination from "../components/Pagination";
 
 export default function FriendRequests() {
     const { user } = useUser();
     const [requests, setRequests] = useState<FriendRequest[]>([]);
+    const [page, setPage] = useState(1);
+    const [pagination, setPagination] = useState<PaginatedApiSuccess<FriendRequest[]>["meta"] | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [actionError, setActionError] = useState<string | null>(null);
@@ -17,11 +20,15 @@ export default function FriendRequests() {
         const controller = new AbortController();
 
         async function loadRequests() {
+            setLoading(true);
+            setError(null);
             try {
-                const { data } = await FRIEND_API.get<{ message: string; data: FriendRequest[] }>("/friend-requests", {
+                const { data } = await FRIEND_API.get<PaginatedApiSuccess<FriendRequest[]>>("/friend-requests", {
+                    params: { page },
                     signal: controller.signal
                 });
                 setRequests(data.data);
+                setPagination(data.meta);
             } catch (err) {
                 if (!controller.signal.aborted) {
                     const message = axios.isAxiosError<{ error?: string }>(err)
@@ -36,7 +43,7 @@ export default function FriendRequests() {
 
         void loadRequests();
         return () => controller.abort();
-    }, []);
+    }, [page]);
 
     async function handleRequest(requestId: string, action: "accept" | "reject") {
         setProcessingRequestId(requestId);
@@ -48,6 +55,24 @@ export default function FriendRequests() {
                 { requestId }
             );
             setRequests(current => current.filter(request => request.id !== requestId));
+            setPagination(current => {
+                if (!current) return current;
+                const total = Math.max(0, current.total - 1);
+                const totalPages = Math.ceil(total / current.pagination.limit);
+                return {
+                    ...current,
+                    total,
+                    count: Math.max(0, current.count - 1),
+                    pagination: {
+                        ...current.pagination,
+                        total,
+                        totalPages,
+                        hasNextPage: current.pagination.page < totalPages,
+                        hasPreviousPage: current.pagination.page > 1
+                    }
+                };
+            });
+            if (requests.length === 1 && page > 1) setPage(current => current - 1);
         } catch (err) {
             const message = (axios.isAxiosError<{ error?: string }>(err)
                 ? err.response?.data.error
@@ -65,7 +90,7 @@ export default function FriendRequests() {
             <header className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                     <h1>FRIEND REQUESTS</h1>
-                    {!loading && !error && <span className="self-baseline-last -translate-y-3">({requests.length})</span>}
+                    {!loading && !error && pagination && <span className="self-baseline-last -translate-y-3">({pagination.total})</span>}
                 </div>
             </header>
             {actionError && (
@@ -119,6 +144,15 @@ export default function FriendRequests() {
                             </li>
                         ))}
                     </ul>
+                )}
+                {!loading && !error && pagination && (
+                    <Pagination
+                        page={pagination.pagination.page}
+                        totalPages={pagination.pagination.totalPages}
+                        hasNextPage={pagination.pagination.hasNextPage}
+                        hasPreviousPage={pagination.pagination.hasPreviousPage}
+                        onPageChange={setPage}
+                    />
                 )}
             </div>
         </section>

@@ -1,5 +1,8 @@
+import type { ClientMessage } from "./conversations.js";
 import type { UUID } from "./global.js";
 import type { User } from "./users.js";
+
+type LastMessage = Omit<ClientMessage, "conversationId">
 
 interface Friendship {
     id: UUID;
@@ -23,5 +26,9 @@ interface Friend extends Omit<User, "email"> {
     friendshipId: UUID;
 }
 
+interface ChatFriend extends Friend {
+    lastMessage: LastMessage | null;
+}
 
-export type { Friend, FriendRequest, Friendship };
+
+export type { ChatFriend, Friend, FriendRequest, Friendship };

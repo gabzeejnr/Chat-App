@@ -1,12 +1,12 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useUser } from "../../context/UserContext";
 import { useSocket } from "../../context/SocketContext";
-import { axios, MESSAGE_API } from "../../apis/axios";
+import { useUser } from "../../context/UserContext";
 import { ArrowLeft, SendHorizontal } from "../../libs";
+import { MESSAGE_API, axios } from "../../apis/axios";
 import { toTime } from "../../utils";
 import type { SubmitEvent, KeyboardEvent } from "react";
-import type { Friend, ClientMessage, UUID } from "@chat-app/shared";
-import type { ChatInputProps, MessagesAreaProps } from "../../types";
+import type { ClientMessage, UUID } from "@chat-app/shared";
+import type { ChatAreaProps, ChatInputProps, MessagesAreaProps } from "../../types";
 import styles from "./Chats.module.scss";
 
 function ChatInput({ username, sendingMessage, onSend }: ChatInputProps) {
@@ -87,12 +87,12 @@ function MessagesArea({ messages, friendshipId, userId }: MessagesAreaProps) {
     )
 }
 
-export default function ChatArea({ friend, onBack }: { friend: Friend; onBack: () => void }) {
-    const { user } = useUser();
+export default function ChatArea({ friend, onBack }: ChatAreaProps) {
     const { subscribeToNewMessages } = useSocket();
+    const { user } = useUser();
     const { username, friendshipId } = friend;
-    const currentFriendship = useRef<UUID | null>(friendshipId);
     const [messages, setMessages] = useState<ClientMessage[]>([]);
+    const currentFriendship = useRef<UUID | null>(friendshipId);
     const [loadingMessages, setLoadingMessages] = useState(true);
     const [messagesError, setMessagesError] = useState<string | null>(null);
     const [sendingMessage, setSendingMessage] = useState(false);
@@ -119,22 +119,6 @@ export default function ChatArea({ friend, onBack }: { friend: Friend; onBack: (
         }
     }
 
-    useLayoutEffect(() => {
-        currentFriendship.current = friendshipId;
-    }, [friendshipId]);
-
-    useEffect(() => subscribeToNewMessages(({ friendshipId: eventFriendshipId, message }) => {
-        if (eventFriendshipId !== currentFriendship.current) return;
-        setMessages(previous => [...previous, message]);
-    }), [friendshipId, subscribeToNewMessages]);
-
-    useEffect(() => {
-        const controller = new AbortController();
-        setSendingMessage(false);
-        void loadMessages(controller.signal);
-        return () => controller.abort();
-    }, [friendshipId]);
-
     async function handleSend(message: string) {
         setSendingMessage(true);
         const activeFriendshipId = friendshipId
@@ -153,19 +137,36 @@ export default function ChatArea({ friend, onBack }: { friend: Friend; onBack: (
         }
     }
 
+    useLayoutEffect(() => {
+        currentFriendship.current = friendshipId;
+    }, [friendshipId]);
+
+    useEffect(() => {
+        const controller = new AbortController();
+        setSendingMessage(false);
+        void loadMessages(controller.signal);
+        return () => controller.abort();
+    }, [friendshipId]);
+
+    useEffect(() => subscribeToNewMessages(({ friendshipId: eventFriendshipId, message }) => {
+        if (eventFriendshipId !== currentFriendship.current) return;
+        setMessages(previous => [...previous, message]);
+    }), [friendshipId, subscribeToNewMessages]);
+
+
     return (
-        <section className="flex h-full min-h-0 flex-col overflow-hidden px-2">
+        <section className="flex h-full min-h-0 flex-col overflow-hidden px-2 w-full">
             <button type="button" onClick={onBack} aria-label="Back to chats"
                 className="flex shrink-0 items-center gap-2 py-2 text-left md:hidden"
             >
                 <ArrowLeft size={20} />
                 <span>{friend.displayName}</span>
             </button>
-            <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden">
-                {loadingMessages && <p role="status">Loading messages...</p>}
-                {messagesError && <p role="alert" className="text-danger">{messagesError}</p>}
+            <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden border">
+                {<p role="status" className="m-auto">Loading messages...</p>}
+                {/* {messagesError && <p role="alert" className="text-danger">{messagesError}</p>} */}
                 <MessagesArea messages={messages} friendshipId={friendshipId} userId={user?.userId} />
-                <ChatInput username={username} sendingMessage={sendingMessage} onSend={(e) => handleSend(e)} />
+                <ChatInput username={username} sendingMessage={sendingMessage} onSend={e => handleSend(e)} />
             </div>
         </section>
     )

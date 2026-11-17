@@ -1,14 +1,9 @@
 import ProfilePicture from "../Avatar";
 import { toInitials } from "../../libs";
-import type { Friend } from "@chat-app/shared";
+import type { ChatListProps } from "../../types";
 
-interface ChatListProps {
-    friend: Friend;
-    isSelected: boolean;
-    onSelectFriend: (friend: Friend) => void;
-}
 
-export default function ChatList({ friend, isSelected, onSelectFriend }: ChatListProps) {
+export default function ChatList({ friend, lastMessage, isSelected, onSelectFriend }: ChatListProps) {
     const { avatarUrl, displayName, userId } = friend;
     const unreadCount = 99;
 
@@ -19,7 +14,7 @@ export default function ChatList({ friend, isSelected, onSelectFriend }: ChatLis
             <ProfilePicture key={`${userId}-${avatarUrl}`} url={avatarUrl} name={displayName} size={14} initials={(toInitials(displayName)).slice(0, 2)} />
             <div className="flex flex-col h-full gap-2">
                 <span className="font-medium text-left">{displayName}</span>
-                <span className="text-gray-400 font-thin text-sm max-w-35 truncate">Hey, I forgot to mention</span>
+                <span className="text-gray-400 font-thin text-sm max-w-35 truncate">{lastMessage ?? "New chat"}</span>
             </div>
             <div className="flex flex-col gap-2 items-center justify-between h-full">
                 <span className="text-gray-700">10m</span>

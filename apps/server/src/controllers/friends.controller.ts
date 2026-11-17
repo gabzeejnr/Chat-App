@@ -4,11 +4,45 @@ import { userIdError } from "../libs/error.libs.js";
 import { sendFriendRequestFunc } from "../repositories/friends.repository.js";
 import type { Request, Response } from "express";
 import type { PoolClient } from "pg";
-import type { Friend, FriendRequest as FriendRequestDto } from "@chat-app/shared";
-import type { ApiError, ApiSuccess, DatabaseFriendship, FriendRequest, FriendRow, GetFriendRequests } from "../types/index.js";
+import type { CollectionMeta, Friend, FriendRequest as FriendRequestDto, PaginatedApiSuccess } from "@chat-app/shared";
+import type { ApiError, ApiSuccess, DatabaseFriendship, FriendRequest, FriendRow, GetFriendRequests, PaginationMeta } from "../types/index.js";
 import type { AcceptFriendRequestInput, RejectFriendRequestInput, SendFriendRequestInput } from "../apis/friends.js";
 
-async function getFriend(req: Request<{}, {}, {}, { friendshipId?: string }>, res: Response<ApiSuccess<Friend | Friend[]> | ApiError>): Promise<void> {
+const DEFAULT_PAGE = 1;
+const DEFAULT_LIMIT = 20;
+const MAX_LIMIT = 100;
+
+function parsePagination(pageParam?: string, limitParam?: string) {
+    const page = pageParam === undefined ? DEFAULT_PAGE : Number(pageParam);
+    const limit = limitParam === undefined ? DEFAULT_LIMIT : Number(limitParam);
+    const offset = (page - 1) * limit;
+    if (!Number.isSafeInteger(page) || page < 1 || !Number.isInteger(limit) || limit < 1 || limit > MAX_LIMIT || !Number.isSafeInteger(offset)) {
+        return null;
+    }
+
+    return { page, limit, offset };
+}
+
+function createCollectionMeta(page: number, limit: number, total: number, count: number): CollectionMeta {
+    const totalPages = Math.ceil(total / limit);
+    const pagination: PaginationMeta = {
+        page,
+        limit,
+        total,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1
+    };
+
+    return { total, count, pagination };
+}
+
+async function getFriend(req: Request<{}, {}, {}, {
+    friendshipId?: string;
+    page?: string;
+    limit?: string | number;
+    username?: string;
+}>, res: Response<ApiSuccess<Friend | Friend[], CollectionMeta> | ApiError>): Promise<void> {
     try {
         const userId = res.locals.user?.userId;
         if (!userId) {
@@ -32,8 +66,21 @@ async function getFriend(req: Request<{}, {}, {}, { friendshipId?: string }>, re
             );
             data = rows;
         } else {
-            const { rows } = await pool.query<FriendRow>(`
-            SELECT f.id AS friendship_id, u.id AS user_id, u.username,
+            const pagination = parsePagination(
+                req.query.page,
+                req.query.limit === undefined ? undefined : String(req.query.limit)
+            );
+            if (!pagination) {
+                res.status(400).json({ error: "Page and limit must be positive integers, and limit cannot exceed 100." });
+                return;
+            }
+
+            const { rows: countRows } = await pool.query<{ total: string }>(
+                `SELECT COUNT(*) AS total FROM friendships WHERE user_one_id = $1 OR user_two_id = $1`,
+                [userId]
+            );
+            const total = Number(countRows[0]?.total ?? 0);
+            const query = `SELECT f.id AS friendship_id, u.id AS user_id, u.username,
                 COALESCE(u.display_name, u.username) AS display_name,
                 COALESCE(u.avatar_url, '') AS avatar_url
             FROM friendships f
@@ -42,10 +89,24 @@ async function getFriend(req: Request<{}, {}, {}, { friendshipId?: string }>, re
                 ELSE f.user_one_id
             END
             WHERE f.user_one_id = $1 OR f.user_two_id = $1
-            ORDER BY f.created_at DESC`,
-                [userId]
-            );
+            ORDER BY f.created_at DESC, f.id DESC
+            LIMIT $2 OFFSET $3`;
+            const values = [userId, pagination.limit, pagination.offset];
+            const { rows } = await pool.query<FriendRow>(query, values);
             data = rows;
+            const meta = createCollectionMeta(pagination.page, pagination.limit, total, rows.length);
+            res.status(200).json({
+                message: rows.length ? "Friends fetched successfully." : "No friends found.",
+                data: rows.map(row => ({
+                    friendshipId: row.friendship_id,
+                    userId: row.user_id,
+                    username: row.username,
+                    displayName: row.display_name,
+                    avatarUrl: row.avatar_url
+                })),
+                meta
+            });
+            return;
         }
 
         if (friendshipId && !data.length) {
@@ -77,7 +138,7 @@ async function getFriend(req: Request<{}, {}, {}, { friendshipId?: string }>, re
     }
 }
 
-async function getFriendRequests(_req: Request, res: Response<ApiSuccess<FriendRequestDto[]> | ApiError>) {
+async function getFriendRequests(req: Request<{}, {}, {}, { page?: string; limit?: string }>, res: Response<PaginatedApiSuccess<FriendRequestDto[]> | ApiError>) {
     try {
         const userId = res.locals.user?.userId;
         if (!userId) {
@@ -85,10 +146,21 @@ async function getFriendRequests(_req: Request, res: Response<ApiSuccess<FriendR
             return;
         }
 
+        const pagination = parsePagination(req.query.page, req.query.limit);
+        if (!pagination) {
+            res.status(400).json({ error: "Page and limit must be positive integers, and limit cannot exceed 100." });
+            return;
+        }
+
+        const { rows: countRows } = await pool.query<{ total: string }>(
+            `SELECT COUNT(*) AS total FROM friend_requests WHERE receiver_id = $1 AND status = 'pending'`,
+            [userId]
+        );
+        const total = Number(countRows[0]?.total ?? 0);
         const { rows } = await pool.query<GetFriendRequests>(`SELECT fr.id, fr.sender_id, fr.receiver_id, fr.status, fr.created_at, u.username, u.display_name, u.avatar_url
                 FROM friend_requests fr JOIN users u ON u.id = fr.sender_id WHERE fr.receiver_id = $1
-                AND fr.status = 'pending' ORDER BY fr.created_at DESC;`,
-            [userId]
+                AND fr.status = 'pending' ORDER BY fr.created_at DESC, fr.id DESC LIMIT $2 OFFSET $3`,
+            [userId, pagination.limit, pagination.offset]
         )
 
         const requests: FriendRequestDto[] = rows.map(row => ({
@@ -104,7 +176,8 @@ async function getFriendRequests(_req: Request, res: Response<ApiSuccess<FriendR
 
         res.status(200).json({
             message: "Requests fetched successfully.",
-            data: requests
+            data: requests,
+            meta: createCollectionMeta(pagination.page, pagination.limit, total, requests.length)
         })
     } catch (err) {
         console.error("Couldn't get friend requests:", err);
